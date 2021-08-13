@@ -2,20 +2,36 @@ package com.example.tmdb
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.tmdb.utils.getMainViewModel
-import com.example.tmdb.viewmodels.MainViewModel
+import androidx.navigation.NavController
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.example.tmdb.databinding.ContentMainBinding
 
 class MainActivity : AppCompatActivity() {
-    private val viewModel: MainViewModel by lazy { getMainViewModel(this) }
+    private lateinit var binding: ContentMainBinding
+    private val navController: NavController by lazy {
+        findNavController(this, R.id.nav_host_fragment)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ContentMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        appBarConfiguration()
+        setupBottomNavigationView()
+    }
 
-//        viewModel.getMovieDetails(436969, BuildConfig.API_KEY)
-//        viewModel.getSimilarMovies(436969, BuildConfig.API_KEY)
-//        viewModel.discoverMovies("80, 18", BuildConfig.API_KEY)
-//        viewModel.getPopularMovies(BuildConfig.API_KEY)
-        viewModel.getGenres(BuildConfig.API_KEY)
+    override fun onSupportNavigateUp() = navController.navigateUp()
+
+    private fun setupBottomNavigationView() =
+        binding.bottomNavigationView.setupWithNavController(navController)
+
+    private fun appBarConfiguration() {
+        val config = AppBarConfiguration(setOf(R.id.home_fragment, R.id.explore_fragment))
+        setupActionBarWithNavController(navController, config)
     }
 }
+
+
