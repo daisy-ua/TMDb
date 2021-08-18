@@ -1,14 +1,17 @@
 package com.example.tmdb.viewmodels
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.tmdb.data.repository.Repository
+import androidx.lifecycle.*
+import com.example.tmdb.data.models.Movie
+import com.example.tmdb.data.repository.CacheRepository
+import com.example.tmdb.utils.Resource
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class MainViewModel(private val repository: Repository) : ViewModel() {
+class MainViewModel(private val repository: CacheRepository) : ViewModel() {
+    val popularMoviesResponse = MutableLiveData<Resource<List<Movie>>>()
 
-    fun getPopularMovies(api_key: String) = viewModelScope.launch {
-        repository.getPopularMovies(api_key)
+    fun setPopularMovies(api_key: String) = viewModelScope.launch {
+        repository.getPopularMovies(api_key).collect() { popularMoviesResponse.postValue(it) }
     }
 
     fun getMovieDetails(id: Int, api_key: String) = viewModelScope.launch {
@@ -27,7 +30,7 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
         repository.discoverMovies(genre_ids, api_key)
     }
 
-    fun getGenres(api_key: String) = viewModelScope.launch {
-        repository.getGenres(api_key)
-    }
+//    fun getGenres(api_key: String) = viewModelScope.launch {
+//        repository.getGenres(api_key)
+//    }
 }

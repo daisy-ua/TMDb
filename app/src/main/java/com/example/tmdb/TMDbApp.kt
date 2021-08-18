@@ -4,18 +4,18 @@ import android.app.Application
 import com.example.tmdb.data.remote.NetworkManager
 import com.example.tmdb.data.remote.models.MovieDTOMapper
 import com.example.tmdb.data.remote.repositories.GenreRepository
-import com.example.tmdb.data.remote.repositories.MovieRepository
-import com.example.tmdb.data.repository.Repository
+import com.example.tmdb.data.remote.repositories.MovieHelper
+import com.example.tmdb.data.repository.CacheRepository
 
 class TMDbApp : Application() {
     companion object {
-        lateinit var repository: Repository
+        lateinit var repository: CacheRepository
     }
 
     override fun onCreate() {
         super.onCreate()
-        val movieRepository = MovieRepository(NetworkManager.movieServices, MovieDTOMapper())
+        val movieRepository = MovieHelper(NetworkManager.movieServices, MovieDTOMapper())
         val genreRepository = GenreRepository(NetworkManager.genreServices)
-        repository = Repository(movieRepository, genreRepository)
+        repository = CacheRepository(this)
     }
 }

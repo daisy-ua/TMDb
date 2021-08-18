@@ -5,7 +5,7 @@ import com.example.tmdb.data.remote.services.MovieServices
 import com.example.tmdb.data.remote.models.MovieDTOMapper
 
 // TODO: pass api_key via interceptor
-class MovieRepository(
+class MovieHelper(
     private val movieService: MovieServices,
     private val mapper: MovieDTOMapper
 ) : IServicesRepository<Movie> {
