@@ -36,7 +36,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupListeners() {
-        viewModel.setPopularMovies(BuildConfig.API_KEY)
         viewModel.popularMoviesResponse.observe(viewLifecycleOwner, listObserver)
     }
 

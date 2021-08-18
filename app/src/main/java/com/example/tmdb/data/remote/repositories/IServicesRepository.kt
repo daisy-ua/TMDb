@@ -2,13 +2,13 @@ package com.example.tmdb.data.remote.repositories
 
 
 interface IServicesRepository<T> {
-    suspend fun getPopular(api_key: String) : List<T>
+    suspend fun getPopular() : List<T>
 
-    suspend fun getDetails(id: Int, api_key: String) : T
+    suspend fun getDetails(id: Int) : T
 
-    suspend fun getSimilar(id: Int, api_key: String) : List<T>
+    suspend fun getSimilar(id: Int) : List<T>
 
-    suspend fun search(query: String, api_key: String) : List<T>
+    suspend fun search(query: String) : List<T>
 
-    suspend fun discover(genre_ids: String, api_key: String) : List<T>
+    suspend fun discover(genre_ids: String) : List<T>
 }

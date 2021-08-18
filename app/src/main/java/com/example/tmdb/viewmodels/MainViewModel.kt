@@ -10,27 +10,31 @@ import kotlinx.coroutines.launch
 class MainViewModel(private val repository: CacheRepository) : ViewModel() {
     val popularMoviesResponse = MutableLiveData<Resource<List<Movie>>>()
 
-    fun setPopularMovies(api_key: String) = viewModelScope.launch {
-        repository.getPopularMovies(api_key).collect() { popularMoviesResponse.postValue(it) }
+    init {
+        setPopularMovies()
     }
 
-    fun getMovieDetails(id: Int, api_key: String) = viewModelScope.launch {
-        repository.getMovieDetails(id, api_key)
+    private fun setPopularMovies() = viewModelScope.launch {
+        repository.getPopularMovies().collect() { popularMoviesResponse.postValue(it) }
     }
 
-    fun getSimilarMovies(id: Int, api_key: String) = viewModelScope.launch {
-        repository.getSimilarMovies(id, api_key)
+    fun getMovieDetails(id: Int) = viewModelScope.launch {
+        repository.getMovieDetails(id)
     }
 
-    fun searchMovies(query: String, api_key: String) = viewModelScope.launch {
-        repository.searchMovies(query, api_key)
+    fun getSimilarMovies(id: Int) = viewModelScope.launch {
+        repository.getSimilarMovies(id)
     }
 
-    fun discoverMovies(genre_ids: String, api_key: String) = viewModelScope.launch {
-        repository.discoverMovies(genre_ids, api_key)
+    fun searchMovies(query: String) = viewModelScope.launch {
+        repository.searchMovies(query)
     }
 
-//    fun getGenres(api_key: String) = viewModelScope.launch {
-//        repository.getGenres(api_key)
+    fun discoverMovies(genre_ids: String) = viewModelScope.launch {
+        repository.discoverMovies(genre_ids)
+    }
+
+//    fun getGenres() = viewModelScope.launch {
+//        repository.getGenres()
 //    }
 }
