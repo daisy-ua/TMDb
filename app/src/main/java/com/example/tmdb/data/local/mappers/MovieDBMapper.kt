@@ -7,11 +7,11 @@ import com.example.tmdb.utils.DomainMapper
 class MovieDBMapper : DomainMapper<MovieDB, Movie> {
     override fun mapToDomainModel(model: MovieDB): Movie =
         Movie(model.uid, model.title, model.originalTitle, model.voteAverage,
-            model.releaseDate, model.posterPath, model.overview, listOf())
+            model.releaseDate, model.posterPath, model.overview, model.genre)
 
     override fun mapFromDomainModel(domainModel: Movie): MovieDB =
         MovieDB(domainModel.id, domainModel.title, domainModel.originalTitle, domainModel.voteAverage,
-            domainModel.releaseDate, domainModel.posterPath, domainModel.overview)
+            domainModel.releaseDate, domainModel.posterPath, domainModel.overview, domainModel.genre)
 
     fun toDomainList(initial: List<MovieDB>): List<Movie> = initial.map { mapToDomainModel(it) }
 

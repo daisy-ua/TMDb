@@ -2,7 +2,6 @@ package com.example.tmdb.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tmdb.data.models.Movie
@@ -36,11 +35,9 @@ class MovieAdapter : ListAdapter<Movie, MovieAdapter.ItemViewHolder>(DiffUtilCal
         RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: Movie) = with(item_binding) {
             movieTitle.text = movie.title
-//            movieDescription.text = movie.overview
-//            movieGenres.text = movie.genre.toString() //TODO: replace with names
             movieVoteAverage.text = movie.voteAverage.toString()
 
-            ImageManager.getImage(movieImage as AppCompatImageView, movie.posterPath)
+            ImageManager.getImage(movieImage, movie.posterPath)
         }
     }
 }

@@ -3,6 +3,8 @@ package com.example.tmdb.data.local.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.example.tmdb.data.local.converters.IntListConverter
 
 @Entity(tableName = "popular_movies")
 data class MovieDB(
@@ -13,5 +15,5 @@ data class MovieDB(
     @ColumnInfo(name="release_date") val releaseDate: String,
     @ColumnInfo(name="poster_path") val posterPath: String,
     val overview: String,
-//    val genre: List<Int>
+    val genre: List<Int>
 )
