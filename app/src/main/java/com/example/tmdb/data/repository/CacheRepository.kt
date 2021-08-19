@@ -6,7 +6,6 @@ import com.example.tmdb.data.local.LocalDatabase
 import com.example.tmdb.data.local.repository.LocalMovieHelper
 import com.example.tmdb.data.models.Movie
 import com.example.tmdb.data.remote.NetworkManager
-import com.example.tmdb.data.remote.mappers.MovieDTOMapper
 import com.example.tmdb.data.remote.repositories.RemoteMovieHelper
 import com.example.tmdb.utils.Resource
 import com.example.tmdb.utils.networkBoundResource
@@ -19,6 +18,8 @@ class CacheRepository(context: Application) {
 
     suspend fun getMovieDetails(id: Int): Movie =
         remoteHelper.getDetails(id)
+
+    suspend fun clear() = localHelper.deleteAll()
 
     fun getPopularMovies() : Flow<Resource<List<Movie>>> =
         networkBoundResource(

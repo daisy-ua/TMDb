@@ -1,6 +1,7 @@
 package com.example.tmdb.viewmodels
 
 import androidx.lifecycle.*
+import com.bumptech.glide.Glide
 import com.example.tmdb.data.models.Movie
 import com.example.tmdb.data.repository.CacheRepository
 import com.example.tmdb.utils.Resource
@@ -11,6 +12,7 @@ class MainViewModel(private val repository: CacheRepository) : ViewModel() {
     val popularMoviesResponse = MutableLiveData<Resource<List<Movie>>>()
 
     init {
+//        viewModelScope.launch{ repository.clear() }
         setPopularMovies()
     }
 

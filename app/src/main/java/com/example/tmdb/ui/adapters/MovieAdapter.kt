@@ -17,6 +17,8 @@ class MovieAdapter : ListAdapter<Movie, MovieAdapter.ItemViewHolder>(DiffUtilCal
         setHasStableIds(true)
     }
 
+    override fun getItemViewType(position: Int): Int = position
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         binding = ContainerMovieRvItemBinding.inflate(layoutInflater, parent, false)
@@ -34,8 +36,8 @@ class MovieAdapter : ListAdapter<Movie, MovieAdapter.ItemViewHolder>(DiffUtilCal
         RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: Movie) = with(item_binding) {
             movieTitle.text = movie.title
-            movieDescription.text = movie.overview
-            movieGenres.text = movie.genre.toString() //TODO: replace with names
+//            movieDescription.text = movie.overview
+//            movieGenres.text = movie.genre.toString() //TODO: replace with names
             movieVoteAverage.text = movie.voteAverage.toString()
 
             ImageManager.getImage(movieImage as AppCompatImageView, movie.posterPath)

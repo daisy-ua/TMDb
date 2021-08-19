@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tmdb.data.models.Movie
 import com.example.tmdb.databinding.FragmentHomeBinding
@@ -31,7 +32,7 @@ class HomeFragment : Fragment() {
 
     private fun setupRecyclerView() = with(binding.movieList.rv) {
         setHasFixedSize(true)
-        layoutManager = LinearLayoutManager(context)
+        layoutManager = GridLayoutManager(context, 2)
         adapter = MovieAdapter()
     }
 

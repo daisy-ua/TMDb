@@ -7,4 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gorse">#FFEB3B</color>
+    <color name="bright_sun">#FDD835</color>
+    <color name="sunglow">#FFCA28</color>
+    <color name="paris_daisy">#FFF176</color>
 </resources>
