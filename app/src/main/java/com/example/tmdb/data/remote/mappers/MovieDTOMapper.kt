@@ -1,6 +1,7 @@
-package com.example.tmdb.data.remote.models
+package com.example.tmdb.data.remote.mappers
 
 import com.example.tmdb.data.models.Movie
+import com.example.tmdb.data.remote.models.MovieDTO
 import com.example.tmdb.utils.DomainMapper
 
 class MovieDTOMapper: DomainMapper<MovieDTO, Movie> {

@@ -2,11 +2,11 @@ package com.example.tmdb.data.remote.repositories
 
 import com.example.tmdb.data.models.Movie
 import com.example.tmdb.data.remote.services.MovieServices
-import com.example.tmdb.data.remote.models.MovieDTOMapper
+import com.example.tmdb.data.remote.mappers.MovieDTOMapper
 
-class MovieHelper(
+class RemoteMovieHelper(
     private val movieService: MovieServices,
-    private val mapper: MovieDTOMapper
+    private val mapper: MovieDTOMapper = MovieDTOMapper()
 ) : IServicesRepository<Movie> {
     override suspend fun getDetails(id: Int): Movie =
         mapper.mapToDomainModel(movieService.getMovieDetails(id))
