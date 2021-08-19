@@ -2,11 +2,13 @@ package com.example.tmdb.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tmdb.data.models.Movie
 import com.example.tmdb.databinding.ContainerMovieRvItemBinding
 import com.example.tmdb.utils.DiffUtilCallback
+import com.example.tmdb.utils.ImageManager
 
 class MovieAdapter : ListAdapter<Movie, MovieAdapter.ItemViewHolder>(DiffUtilCallback()) {
     private lateinit var binding: ContainerMovieRvItemBinding
@@ -35,6 +37,8 @@ class MovieAdapter : ListAdapter<Movie, MovieAdapter.ItemViewHolder>(DiffUtilCal
             movieDescription.text = movie.overview
             movieGenres.text = movie.genre.toString() //TODO: replace with names
             movieVoteAverage.text = movie.voteAverage.toString()
+
+            ImageManager.getImage(movieImage as AppCompatImageView, movie.posterPath)
         }
     }
 }

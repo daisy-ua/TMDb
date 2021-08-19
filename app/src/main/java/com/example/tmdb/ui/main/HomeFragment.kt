@@ -1,4 +1,4 @@
-package com.example.tmdb
+package com.example.tmdb.ui.main
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
