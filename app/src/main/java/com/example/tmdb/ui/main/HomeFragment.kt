@@ -30,7 +30,7 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    private fun setupRecyclerView() = with(binding.movieList.rv) {
+    private fun setupRecyclerView() = with(binding.contentList.rv) {
         setHasFixedSize(true)
         layoutManager = GridLayoutManager(context, 2)
         adapter = MovieAdapter()
@@ -41,12 +41,12 @@ class HomeFragment : Fragment() {
     }
 
     private val listObserver = Observer<Resource<List<Movie>>> { response ->
-        with(binding) {
+        with(binding.contentList) {
             progressBar.isVisible = response is Resource.Loading && response.data.isNullOrEmpty()
             errorMsg.isVisible = response is Resource.Error && response.data.isNullOrEmpty()
             errorMsg.text = response.throwable?.localizedMessage
 
-            (movieList.rv.adapter as MovieAdapter).run {
+            (rv.adapter as MovieAdapter).run {
                 submitList(response.data)
                 notifyDataSetChanged()
             }
