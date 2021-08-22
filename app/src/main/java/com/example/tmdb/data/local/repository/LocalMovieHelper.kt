@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.map
 class LocalMovieHelper(
     private val dao: MovieDao,
     private val mapper: MovieDBMapper = MovieDBMapper()
-) {
-    fun getPopular() : Flow<List<Movie>> = dao.getPopular().map { list -> mapper.toDomainList(list) }
+) : LocalDataSource<String, Movie> {
+    override fun getAll() : Flow<List<Movie>> = dao.getAll().map { list -> mapper.toDomainList(list) }
 
-    suspend fun insert(list: List<Movie>) = dao.insertMovies(mapper.fromDomainList(list))
+    override suspend fun insert(list: List<Movie>) = dao.insert(mapper.fromDomainList(list))
 
-    suspend fun deleteAll() = dao.deleteAllMovies()
+    override suspend fun deleteAll() = dao.deleteAll()
 }

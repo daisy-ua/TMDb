@@ -1,11 +1,12 @@
 package com.example.tmdb.utils
 
+import com.example.tmdb.utils.network.Resource
 import kotlinx.coroutines.flow.*
 
-inline fun <ResultType, RequestType> networkBoundResource(
+inline fun <ResultType> networkBoundResource(
     crossinline query: () -> Flow<ResultType>,
-    crossinline fetch: suspend () -> RequestType,
-    crossinline saveFetchResult: suspend (RequestType) -> Unit,
+    crossinline fetch: suspend () -> ResultType,
+    crossinline saveFetchResult: suspend (ResultType) -> Unit,
     crossinline shouldFetch: (ResultType) -> Boolean = { true }
 ) = flow {
     val data = query().first()
@@ -19,8 +20,9 @@ inline fun <ResultType, RequestType> networkBoundResource(
         } catch (throwable: Throwable) {
             query().map { Resource.Error(throwable, it) }
         }
-    } else
-        query().map { Resource.Success(it) }
-
+    } else {
+        val result = flow { emit(fetch()) }
+        result.map { Resource.Success(it) }
+    }
     emitAll(flow)
 }

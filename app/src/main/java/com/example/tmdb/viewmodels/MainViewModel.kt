@@ -1,42 +1,50 @@
 package com.example.tmdb.viewmodels
 
 import androidx.lifecycle.*
-import com.bumptech.glide.Glide
+import com.example.tmdb.data.models.Genre
 import com.example.tmdb.data.models.Movie
-import com.example.tmdb.data.repository.CacheRepository
-import com.example.tmdb.utils.Resource
+import com.example.tmdb.data.repository.DiscoverRepository
+import com.example.tmdb.data.repository.GenreRepository
+import com.example.tmdb.utils.network.Resource
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class MainViewModel(private val repository: CacheRepository) : ViewModel() {
+class MainViewModel(
+    private val discoverRepository: DiscoverRepository,
+    private val genreRepository: GenreRepository
+) : ViewModel() {
     val popularMoviesResponse = MutableLiveData<Resource<List<Movie>>>()
+    val moviesByGenre = MutableLiveData<Resource<List<Movie>>>()
+    val genresResponse = MutableLiveData<Resource<List<Genre>>>()
 
     init {
-//        viewModelScope.launch{ repository.clear() }
+//        viewModelScope.launch{ discoverRepository.clear() }
         setPopularMovies()
+        setGenres()
     }
 
     private fun setPopularMovies() = viewModelScope.launch {
-        repository.getPopularMovies().collect() { popularMoviesResponse.postValue(it) }
+        discoverRepository.getPopularMovies().collect() { popularMoviesResponse.postValue(it) }
     }
 
     fun getMovieDetails(id: Int) = viewModelScope.launch {
-        repository.getMovieDetails(id)
+        discoverRepository.getMovieDetails(id)
     }
 
     fun getSimilarMovies(id: Int) = viewModelScope.launch {
-        repository.getSimilarMovies(id)
+        discoverRepository.getSimilarMovies(id)
     }
 
     fun searchMovies(query: String) = viewModelScope.launch {
-        repository.searchMovies(query)
+        discoverRepository.searchMovies(query)
     }
 
     fun discoverMovies(genre_ids: String) = viewModelScope.launch {
-        repository.discoverMovies(genre_ids)
+        discoverRepository.discoverMovies(genre_ids).collect { moviesByGenre.postValue(it) }
     }
 
-//    fun getGenres() = viewModelScope.launch {
-//        repository.getGenres()
-//    }
+    fun setGenres() = viewModelScope.launch {
+        genreRepository.getGenres().collect() { genresResponse.postValue(it) }
+    }
 }

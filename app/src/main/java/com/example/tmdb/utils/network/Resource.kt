@@ -1,4 +1,4 @@
-package com.example.tmdb.utils
+package com.example.tmdb.utils.network
 
 sealed class Resource<T>(
     val data: T? = null,

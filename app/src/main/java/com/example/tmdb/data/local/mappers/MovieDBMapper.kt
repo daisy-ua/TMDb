@@ -12,8 +12,4 @@ class MovieDBMapper : DomainMapper<MovieDB, Movie> {
     override fun mapFromDomainModel(domainModel: Movie): MovieDB =
         MovieDB(domainModel.id, domainModel.title, domainModel.originalTitle, domainModel.voteAverage,
             domainModel.releaseDate, domainModel.posterPath, domainModel.overview, domainModel.genre)
-
-    fun toDomainList(initial: List<MovieDB>): List<Movie> = initial.map { mapToDomainModel(it) }
-
-    fun fromDomainList(initial: List<Movie>): List<MovieDB> = initial.map { mapFromDomainModel(it) }
 }

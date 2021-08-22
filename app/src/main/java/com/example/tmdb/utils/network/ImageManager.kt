@@ -1,4 +1,4 @@
-package com.example.tmdb.utils
+package com.example.tmdb.utils.network
 
 import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide

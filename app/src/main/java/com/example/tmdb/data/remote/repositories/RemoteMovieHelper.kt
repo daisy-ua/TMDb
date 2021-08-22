@@ -7,7 +7,7 @@ import com.example.tmdb.data.remote.mappers.MovieDTOMapper
 class RemoteMovieHelper(
     private val movieService: MovieServices,
     private val mapper: MovieDTOMapper = MovieDTOMapper()
-) : IServicesRepository<Movie> {
+) : RemoteAdvancedDataSource<Movie> {
     override suspend fun getDetails(id: Int): Movie =
         mapper.mapToDomainModel(movieService.getMovieDetails(id))
 
@@ -17,7 +17,7 @@ class RemoteMovieHelper(
     override suspend fun discover(genre_ids: String): List<Movie> =
         mapper.toDomainList(movieService.discoverMovies(genre_ids).results)
 
-    override suspend fun getPopular(): List<Movie> =
+    override suspend fun getAll(): List<Movie> =
         mapper.toDomainList(movieService.getPopularMovies().results)
 
     override suspend fun getSimilar(id: Int): List<Movie> =

@@ -1,8 +1,7 @@
 package com.example.tmdb.data.remote.repositories
 
 
-interface IServicesRepository<T> {
-    suspend fun getPopular() : List<T>
+interface RemoteAdvancedDataSource<T> : RemoteDataSource<T> {
 
     suspend fun getDetails(id: Int) : T
 

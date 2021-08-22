@@ -5,15 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.tmdb.data.models.Movie
 import com.example.tmdb.databinding.FragmentHomeBinding
 import com.example.tmdb.ui.adapters.MovieAdapter
-import com.example.tmdb.utils.Resource
 import com.example.tmdb.utils.getMainViewModel
+import com.example.tmdb.utils.getRecyclerViewDataSetupObserver
+import com.example.tmdb.utils.setupRecyclerView
 import com.example.tmdb.viewmodels.MainViewModel
 
 class HomeFragment : Fragment() {
@@ -25,31 +21,15 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
-        setupRecyclerView()
+        setupRecyclerView(binding.contentList.rv, requireContext(), MovieAdapter())
         setupListeners()
         return binding.root
     }
 
-    private fun setupRecyclerView() = with(binding.contentList.rv) {
-        setHasFixedSize(true)
-        layoutManager = GridLayoutManager(context, 2)
-        adapter = MovieAdapter()
-    }
-
     private fun setupListeners() {
-        viewModel.popularMoviesResponse.observe(viewLifecycleOwner, listObserver)
-    }
-
-    private val listObserver = Observer<Resource<List<Movie>>> { response ->
-        with(binding.contentList) {
-            progressBar.isVisible = response is Resource.Loading && response.data.isNullOrEmpty()
-            errorMsg.isVisible = response is Resource.Error && response.data.isNullOrEmpty()
-            errorMsg.text = response.throwable?.localizedMessage
-
-            (rv.adapter as MovieAdapter).run {
-                submitList(response.data)
-                notifyDataSetChanged()
-            }
-        }
+        viewModel.popularMoviesResponse.observe(
+            viewLifecycleOwner,
+            getRecyclerViewDataSetupObserver(binding.contentList)
+        )
     }
 }
