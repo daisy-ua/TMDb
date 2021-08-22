@@ -5,14 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.tmdb.databinding.FragmentHomeBinding
 import com.example.tmdb.ui.adapters.MovieAdapter
+import com.example.tmdb.ui.interactions.Interaction
 import com.example.tmdb.utils.getMainViewModel
 import com.example.tmdb.utils.getRecyclerViewDataSetupObserver
 import com.example.tmdb.utils.setupRecyclerView
 import com.example.tmdb.viewmodels.MainViewModel
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), Interaction {
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: MainViewModel by lazy { getMainViewModel(requireActivity()) }
 
@@ -21,7 +23,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(layoutInflater, container, false)
-        setupRecyclerView(binding.contentList.rv, requireContext(), MovieAdapter())
+        setupRecyclerView(binding.contentList.rv, requireContext(), MovieAdapter(this))
         setupListeners()
         return binding.root
     }
@@ -31,5 +33,11 @@ class HomeFragment : Fragment() {
             viewLifecycleOwner,
             getRecyclerViewDataSetupObserver(binding.contentList)
         )
+    }
+
+    override fun onItemClicked(position: Int) {
+        val item = (binding.contentList.rv.adapter as MovieAdapter).getItem(position)
+        val action = HomeFragmentDirections.getMovieDetailsAction(item)
+        findNavController().navigate(action)
     }
 }

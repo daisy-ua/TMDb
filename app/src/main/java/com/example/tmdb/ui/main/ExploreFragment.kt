@@ -7,15 +7,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.tmdb.databinding.FragmentExploreBinding
 import com.example.tmdb.ui.adapters.MovieAdapter
+import com.example.tmdb.ui.interactions.Interaction
 import com.example.tmdb.utils.getMainViewModel
 import com.example.tmdb.utils.getRecyclerViewDataSetupObserver
 import com.example.tmdb.utils.setupRecyclerView
 import com.example.tmdb.viewmodels.MainViewModel
 import com.google.android.material.tabs.TabLayout
 
-class ExploreFragment : Fragment() {
+class ExploreFragment : Fragment(), Interaction {
     private lateinit var binding: FragmentExploreBinding
     private val viewModel: MainViewModel by lazy { getMainViewModel(requireActivity()) }
 
@@ -31,13 +33,13 @@ class ExploreFragment : Fragment() {
 
     private fun setupView() {
         setupTabView()
-        setupRecyclerView(binding.contentList.rv, requireContext(), MovieAdapter())
+        setupRecyclerView(binding.contentList.rv, requireContext(), MovieAdapter(this))
     }
 
     private fun setupListeners() {
+        binding.genresBar.addOnTabSelectedListener(onTabSelectedListener)
         viewModel.moviesByGenre.observe(
             viewLifecycleOwner, getRecyclerViewDataSetupObserver(binding.contentList))
-        binding.genresBar.addOnTabSelectedListener(onTabSelectedListener)
     }
 
     private fun setupTabView() = with(binding.genresBar) {
@@ -56,10 +58,14 @@ class ExploreFragment : Fragment() {
             }
         }
 
-        override fun onTabUnselected(tab: TabLayout.Tab?) {
-            Log.i("rita", "on un selected")
-        }
+        override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
         override fun onTabReselected(tab: TabLayout.Tab?) {}
+    }
+
+    override fun onItemClicked(position: Int) {
+        val item = (binding.contentList.rv.adapter as MovieAdapter).getItem(position)
+        val action = ExploreFragmentDirections.getMovieDetailsAction(item)
+        findNavController().navigate(action)
     }
 }

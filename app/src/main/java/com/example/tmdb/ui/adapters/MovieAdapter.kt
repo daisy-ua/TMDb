@@ -6,10 +6,13 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tmdb.data.models.Movie
 import com.example.tmdb.databinding.ContainerMovieRvItemBinding
+import com.example.tmdb.ui.interactions.Interaction
 import com.example.tmdb.utils.DiffUtilCallback
 import com.example.tmdb.utils.network.ImageManager
 
-class MovieAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MovieAdapter(
+    val interaction: Interaction
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var binding: ContainerMovieRvItemBinding
     private val diffCallback = DiffUtilCallback()
     private val differ = AsyncListDiffer(this,diffCallback)
@@ -37,17 +40,20 @@ class MovieAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemCount(): Int = differ.currentList.size
 
-    fun submitList(list: List<Movie>) {
-        differ.submitList(list)
-    }
+    fun submitList(list: List<Movie>) = differ.submitList(list)
 
-    inner class ItemViewHolder(private val item_binding: ContainerMovieRvItemBinding) :
+    fun getItem(position: Int) = differ.currentList[position]
+
+    //TODO: remove outside the adapter
+    inner class ItemViewHolder(private val itemBinding: ContainerMovieRvItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(movie: Movie) = with(item_binding) {
+        fun bind(movie: Movie) = with(itemBinding) {
             movieTitle.text = movie.title
             movieVoteAverage.text = movie.voteAverage.toString()
 
             ImageManager.getImage(movieImage, movie.posterPath)
+
+            itemView.setOnClickListener{ interaction.onItemClicked(adapterPosition) }
         }
     }
 }

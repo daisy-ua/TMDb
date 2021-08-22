@@ -8,16 +8,31 @@
     <fragment
         android:id="@+id/home_fragment"
         android:name="com.example.tmdb.ui.main.HomeFragment"
-        android:label="Home"
+        android:label="@string/home_name"
         tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/get_movie_details_action"
+            app:destination="@id/movie_details_fragment"/>
     </fragment>
 
     <fragment
         android:id="@+id/explore_fragment"
         android:name="com.example.tmdb.ui.main.ExploreFragment"
-        android:label="Explore"
+        android:label="@string/explore_name"
         tools:layout="@layout/fragment_explore">
+        <action
+            android:id="@id/get_movie_details_action"
+            app:destination="@id/movie_details_fragment"/>
     </fragment>
 
+    <fragment
+        android:id="@+id/movie_details_fragment"
+        android:name="com.example.tmdb.ui.main.details.MovieDetailsFragment"
+        android:label="@string/details_name"
+        tools:layout="@layout/fragment_movie_details">
+        <argument
+            android:name="movie"
+            app:argType="com.example.tmdb.data.models.Movie"/>
+    </fragment>
 
 </navigation>
