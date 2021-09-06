@@ -9,9 +9,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.tmdb.databinding.FragmentHomeBinding
 import com.example.tmdb.ui.adapters.MovieAdapter
 import com.example.tmdb.ui.interactions.Interaction
-import com.example.tmdb.utils.getMainViewModel
-import com.example.tmdb.utils.getRecyclerViewDataSetupObserver
-import com.example.tmdb.utils.setupRecyclerView
+import com.example.tmdb.viewmodels.getMainViewModel
+import com.example.tmdb.utils.components.getRecyclerViewDataSetupObserver
+import com.example.tmdb.utils.components.setupRecyclerView
 import com.example.tmdb.viewmodels.MainViewModel
 
 class HomeFragment : Fragment(), Interaction {

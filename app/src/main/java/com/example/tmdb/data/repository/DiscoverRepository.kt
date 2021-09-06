@@ -33,8 +33,8 @@ class DiscoverRepository(context: Application) {
             }
         )
 
-    suspend fun getSimilarMovies(id: Int): List<Movie> =
-        remoteHelper.getSimilar(id)
+    suspend fun getSimilarMovies(id: Int): Flow<Resource<List<Movie>>> =
+        flow { emit(Resource.Success(remoteHelper.getSimilar(id))) }
 
     suspend fun searchMovies(query: String) : List<Movie> =
         remoteHelper.search(query)

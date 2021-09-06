@@ -2,7 +2,6 @@ package com.example.tmdb.ui.main
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +10,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.tmdb.databinding.FragmentExploreBinding
 import com.example.tmdb.ui.adapters.MovieAdapter
 import com.example.tmdb.ui.interactions.Interaction
-import com.example.tmdb.utils.getMainViewModel
-import com.example.tmdb.utils.getRecyclerViewDataSetupObserver
-import com.example.tmdb.utils.setupRecyclerView
+import com.example.tmdb.viewmodels.getMainViewModel
+import com.example.tmdb.utils.components.getRecyclerViewDataSetupObserver
+import com.example.tmdb.utils.components.setupRecyclerView
 import com.example.tmdb.viewmodels.MainViewModel
 import com.google.android.material.tabs.TabLayout
 
@@ -26,8 +25,8 @@ class ExploreFragment : Fragment(), Interaction {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentExploreBinding.inflate(inflater, container, false)
-        setupView()
         setupListeners()
+        setupView()
         return binding.root
     }
 
@@ -39,7 +38,8 @@ class ExploreFragment : Fragment(), Interaction {
     private fun setupListeners() {
         binding.genresBar.addOnTabSelectedListener(onTabSelectedListener)
         viewModel.moviesByGenre.observe(
-            viewLifecycleOwner, getRecyclerViewDataSetupObserver(binding.contentList))
+            viewLifecycleOwner, getRecyclerViewDataSetupObserver(binding.contentList)
+        )
     }
 
     private fun setupTabView() = with(binding.genresBar) {

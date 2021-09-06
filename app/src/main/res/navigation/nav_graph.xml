@@ -27,7 +27,7 @@
 
     <fragment
         android:id="@+id/movie_details_fragment"
-        android:name="com.example.tmdb.ui.main.details.MovieDetailsFragment"
+        android:name="com.example.tmdb.ui.main.details.MovieDetailFragment"
         android:label="@string/details_name"
         tools:layout="@layout/fragment_movie_details">
         <argument

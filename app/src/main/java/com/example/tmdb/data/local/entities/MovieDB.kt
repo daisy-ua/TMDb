@@ -15,5 +15,6 @@ data class MovieDB(
     @ColumnInfo(name="release_date") val releaseDate: String,
     @ColumnInfo(name="poster_path") val posterPath: String,
     val overview: String,
-    val genre: List<Int>
+    val genre: List<Int>,
+    val runtime: Int?
 )

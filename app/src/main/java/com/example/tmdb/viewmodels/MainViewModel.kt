@@ -6,7 +6,6 @@ import com.example.tmdb.data.models.Movie
 import com.example.tmdb.data.repository.DiscoverRepository
 import com.example.tmdb.data.repository.GenreRepository
 import com.example.tmdb.utils.network.Resource
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -30,10 +29,6 @@ class MainViewModel(
 
     fun getMovieDetails(id: Int) = viewModelScope.launch {
         discoverRepository.getMovieDetails(id)
-    }
-
-    fun getSimilarMovies(id: Int) = viewModelScope.launch {
-        discoverRepository.getSimilarMovies(id)
     }
 
     fun searchMovies(query: String) = viewModelScope.launch {

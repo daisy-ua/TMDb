@@ -15,5 +15,6 @@ data class MovieDTO(
     val posterPath: String?,
     val overview: String?,
     @SerializedName("genre_ids")
-    val genres: List<Int>
+    val genres: List<Int>,
+    val runtime: Int?
 )

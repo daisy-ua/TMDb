@@ -14,7 +14,8 @@ class MovieDTOMapper: DomainMapper<MovieDTO, Movie> {
             releaseDate = model.releaseDate.orEmpty(),
             posterPath = model.posterPath.orEmpty(),
             overview = model.overview.orEmpty(),
-            genre = model.genres
+            genre = model.genres,
+            runtime = model.runtime
         )
 
     override fun mapFromDomainModel(domainModel: Movie): MovieDTO =
@@ -26,6 +27,7 @@ class MovieDTOMapper: DomainMapper<MovieDTO, Movie> {
             releaseDate = domainModel.releaseDate,
             posterPath = domainModel.posterPath,
             overview = domainModel.overview,
-            genres = domainModel.genre
+            genres = domainModel.genre,
+            runtime = domainModel.runtime
         )
 }

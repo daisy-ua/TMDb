@@ -12,6 +12,9 @@ interface GenreDao {
     @Query("SELECT * FROM genres")
     fun getAll() : Flow<List<GenreDB>>
 
+    @Query("SELECT * FROM genres WHERE id IN (:ids)")
+    fun getById(vararg ids: Int) : Flow<List<GenreDB>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(genres: List<GenreDB>)
 

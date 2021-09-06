@@ -15,4 +15,8 @@ class LocalGenreHelper(
     override suspend fun insert(list: List<Genre>) = dao.insert(mapper.fromDomainList(list))
 
     override suspend fun deleteAll() = dao.deleteAll()
+
+    fun getById(vararg ids: Int) : Flow<List<Genre>> =
+        dao.getById(*ids).map { list -> mapper.toDomainList(list) }
+
 }

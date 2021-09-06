@@ -26,4 +26,6 @@ class GenreRepository(context: Application) {
             }
         }
     )
+
+    fun getGenresById(vararg ids: Int) : Flow<List<Genre>> = localHelper.getById(*ids)
 }
