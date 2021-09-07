@@ -20,7 +20,7 @@ import com.example.tmdb.utils.extensions.observeOnce
 import com.example.tmdb.utils.components.getRecyclerViewDataSetupObserver
 import com.example.tmdb.utils.network.ImageManager
 import com.example.tmdb.utils.components.setupRecyclerView
-import com.example.tmdb.utils.components.getTagTextView
+import com.example.tmdb.utils.components.buildTagTextView
 import com.example.tmdb.utils.ui_converters.getDuration
 import com.example.tmdb.utils.ui_converters.getYear
 import com.example.tmdb.viewmodels.*
@@ -105,9 +105,9 @@ class MovieDetailFragment : Fragment(), Interaction {
 
     private fun genreLayoutObserver(layout: ViewGroup) = Observer<List<Genre>> { data ->
         for (genre in data) {
-            layout.addView(getTagTextView(requireContext(), genre.name))
+            layout.addView(buildTagTextView(requireContext(), genre.name))
         }
-//        TODO("add multiline integration")
+        layout.addView(buildTagTextView(requireContext(), "Horror"))
 //        TODO("add on click redirection")
     }
 }
