@@ -16,8 +16,8 @@ class DiscoverRepository(context: Application) {
     private val remoteHelper = RemoteMovieHelper(NetworkManager.movieServices)
     private val localHelper = LocalMovieHelper(db.movieDao())
 
-    suspend fun getMovieDetails(id: Int): Movie =
-        remoteHelper.getDetails(id)
+    suspend fun getMovieDetails(id: Int): Flow<Resource<Movie>> =
+        flow { emit(Resource.Success(remoteHelper.getDetails(id))) }
 
     suspend fun clear() = localHelper.deleteAll()
 

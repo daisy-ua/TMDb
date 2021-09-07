@@ -27,10 +27,6 @@ class MainViewModel(
         discoverRepository.getPopularMovies().collect() { popularMoviesResponse.postValue(it) }
     }
 
-    fun getMovieDetails(id: Int) = viewModelScope.launch {
-        discoverRepository.getMovieDetails(id)
-    }
-
     fun searchMovies(query: String) = viewModelScope.launch {
         discoverRepository.searchMovies(query)
     }

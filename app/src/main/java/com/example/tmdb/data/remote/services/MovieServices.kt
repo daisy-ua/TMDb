@@ -1,6 +1,6 @@
 package com.example.tmdb.data.remote.services
 
-import com.example.tmdb.data.remote.models.MovieDTO
+import com.example.tmdb.data.remote.models.MovieDetailDTO
 import com.example.tmdb.data.remote.responses.MovieSearchResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -8,7 +8,7 @@ import retrofit2.http.Query
 
 interface MovieServices {
     @GET("movie/{movie_id}")
-   suspend  fun getMovieDetails(@Path("movie_id") id: Int, ) : MovieDTO
+   suspend  fun getMovieDetails(@Path("movie_id") id: Int) : MovieDetailDTO
 
     @GET("movie/popular")
     suspend  fun getPopularMovies() : MovieSearchResponse

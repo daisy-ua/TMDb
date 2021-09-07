@@ -1,11 +1,11 @@
 package com.example.tmdb.data.remote.mappers
 
 import com.example.tmdb.data.models.Movie
-import com.example.tmdb.data.remote.models.MovieDTO
+import com.example.tmdb.data.remote.models.MovieDetailDTO
 import com.example.tmdb.utils.DomainMapper
 
-class MovieDTOMapper: DomainMapper<MovieDTO, Movie> {
-    override fun mapToDomainModel(model: MovieDTO): Movie =
+class MovieDetailDTOMapper: DomainMapper<MovieDetailDTO, Movie> {
+    override fun mapToDomainModel(model: MovieDetailDTO): Movie =
         Movie(
             id = model.id,
             title = model.title,
@@ -14,12 +14,12 @@ class MovieDTOMapper: DomainMapper<MovieDTO, Movie> {
             releaseDate = model.releaseDate.orEmpty(),
             posterPath = model.posterPath.orEmpty(),
             overview = model.overview.orEmpty(),
-            genre = model.genres,
-            runtime = null
+            genre = model.getGenreId(),
+            runtime = model.runtime
         )
 
-    override fun mapFromDomainModel(domainModel: Movie): MovieDTO =
-        MovieDTO(
+    override fun mapFromDomainModel(domainModel: Movie): MovieDetailDTO =
+        MovieDetailDTO(
             id = domainModel.id,
             title = domainModel.title,
             originalTitle = domainModel.originalTitle,
@@ -27,6 +27,7 @@ class MovieDTOMapper: DomainMapper<MovieDTO, Movie> {
             releaseDate = domainModel.releaseDate,
             posterPath = domainModel.posterPath,
             overview = domainModel.overview,
-            genres = domainModel.genre
+            genreIds = domainModel.genre,
+            runtime = domainModel.runtime
         )
 }

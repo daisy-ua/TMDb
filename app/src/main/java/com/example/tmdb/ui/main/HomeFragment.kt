@@ -36,7 +36,7 @@ class HomeFragment : Fragment(), Interaction {
     }
 
     override fun onItemClicked(position: Int) {
-        val item = (binding.contentList.rv.adapter as MovieAdapter).getItem(position)
+        val item = (binding.contentList.rv.adapter as MovieAdapter).getItemId(position)
         val action = HomeFragmentDirections.getMovieDetailsAction(item)
         findNavController().navigate(action)
     }

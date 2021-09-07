@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -21,6 +22,7 @@ import com.example.tmdb.utils.components.getRecyclerViewDataSetupObserver
 import com.example.tmdb.utils.network.ImageManager
 import com.example.tmdb.utils.components.setupRecyclerView
 import com.example.tmdb.utils.components.buildTagTextView
+import com.example.tmdb.utils.network.Resource
 import com.example.tmdb.utils.ui_converters.getDuration
 import com.example.tmdb.utils.ui_converters.getYear
 import com.example.tmdb.viewmodels.*
@@ -35,7 +37,6 @@ class MovieDetailFragment : Fragment(), Interaction {
     private lateinit var viewModel: MovieDetailViewModel
     private lateinit var genreViewModel: GenreViewModel
 
-    private lateinit var movie: Movie
     private var year: Int? = null
     private var duration: String? = null
 
@@ -44,12 +45,7 @@ class MovieDetailFragment : Fragment(), Interaction {
             whenCreated {
                 viewModel = getViewModel(this@MovieDetailFragment, MovieDetailViewModelFactory())
                 genreViewModel = getViewModel(this@MovieDetailFragment, GenreViewModelFactory())
-
-                movie = args.movie
-                year = getYear(movie.releaseDate)
-                duration = getDuration(movie.runtime ?: 0)
-                genreViewModel.setGenreNames(*movie.genre.toIntArray())
-                viewModel.setSimilarMovies(movie.id)
+                viewModel.setMovieDetails(args.movieId.toInt())
             }
         }
     }
@@ -68,14 +64,44 @@ class MovieDetailFragment : Fragment(), Interaction {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        with(binding) {
-            movieTitle.text = movie.title
-            movieDescription.text = movie.overview
-            movieDuration.text = duration
-            movieYear.text = year.toString()
-            ImageManager.getBlurredImage(imageBackground.imageBackground, movie.posterPath)
-            ImageManager.getImage(imageBinding.image, movie.posterPath)
+        viewModel.movieResponse.observeOnce(viewLifecycleOwner, Observer(::setupMainScreenContent))
+    }
+
+    private fun setupMainScreenContent(response: Resource<Movie>) {
+        when(response) {
+            is Resource.Success -> displaySuccessContent(response.data!!)
+            is Resource.Error -> {}
+            is Resource.Loading -> {}
         }
+    }
+
+    private fun displaySuccessContent(data: Movie) {
+        loadInitialData(data)
+        showContent()
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = data.title
+    }
+
+    private fun loadInitialData(movie: Movie) {
+        year = getYear(movie.releaseDate)
+        duration = getDuration(movie.runtime ?: 0)
+        genreViewModel.setGenreNames(*movie.genre.toIntArray())
+        lifecycleScope.launch {
+            viewModel.setSimilarMovies(movie.id)
+        }
+    }
+
+    private fun showContent() {
+        viewModel.movieResponse.value?.data?.let { movie ->
+            with(binding) {
+                movieTitle.text = movie.title
+                movieDescription.text = movie.overview
+                movieDuration.text = duration
+                movieYear.text = year.toString()
+                ImageManager.getBlurredImage(imageBackground.imageBackground, movie.posterPath)
+                ImageManager.getImage(imageBinding.image, movie.posterPath)
+            }
+        }
+
     }
 
     private fun setupView() {
@@ -93,21 +119,16 @@ class MovieDetailFragment : Fragment(), Interaction {
             getRecyclerViewDataSetupObserver(binding.similarMovies)
         )
 
-        genreViewModel.genres.observeOnce(
-            viewLifecycleOwner,
-            genreLayoutObserver(binding.movieGenres)
-        )
+        genreViewModel.genres.observeOnce(viewLifecycleOwner, Observer(::setupGenreLayout))
+    }
+
+    private fun setupGenreLayout(data: List<Genre>) { // TODO("add on click redirection")
+        for (genre in data) {
+            binding.movieGenres.addView(buildTagTextView(requireContext(), genre.name))
+        }
     }
 
     override fun onItemClicked(position: Int) {
         TODO("Not yet implemented")
-    }
-
-    private fun genreLayoutObserver(layout: ViewGroup) = Observer<List<Genre>> { data ->
-        for (genre in data) {
-            layout.addView(buildTagTextView(requireContext(), genre.name))
-        }
-        layout.addView(buildTagTextView(requireContext(), "Horror"))
-//        TODO("add on click redirection")
     }
 }

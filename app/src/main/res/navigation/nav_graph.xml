@@ -31,8 +31,8 @@
         android:label="@string/details_name"
         tools:layout="@layout/fragment_movie_details">
         <argument
-            android:name="movie"
-            app:argType="com.example.tmdb.data.models.Movie"/>
+            android:name="movie_id"
+            app:argType="long"/>
     </fragment>
 
 </navigation>

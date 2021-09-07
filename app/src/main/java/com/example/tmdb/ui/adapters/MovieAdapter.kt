@@ -42,8 +42,6 @@ class MovieAdapter(
 
     fun submitList(list: List<Movie>) = differ.submitList(list)
 
-    fun getItem(position: Int) = differ.currentList[position]
-
     //TODO: remove outside the adapter
     inner class ItemViewHolder(private val itemBinding: ContainerMovieRvItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
