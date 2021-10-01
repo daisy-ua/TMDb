@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.example.tmdb.databinding.FragmentHomeBinding
 import com.example.tmdb.ui.adapters.MovieAdapter
 import com.example.tmdb.ui.interactions.Interaction
@@ -33,7 +34,20 @@ class HomeFragment : Fragment(), Interaction {
             viewLifecycleOwner,
             getRecyclerViewDataSetupObserver(binding.contentList)
         )
+
+        binding.contentList.rv.apply {
+            addOnScrollListener(onRecyclerViewScrollListener(this))
+        }
     }
+
+    private fun onRecyclerViewScrollListener(rv: RecyclerView) =
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (!rv.canScrollVertically(1))
+                    viewModel.loadNextPage()
+            }
+        }
 
     override fun onItemClicked(position: Int) {
         val item = (binding.contentList.rv.adapter as MovieAdapter).getItemId(position)

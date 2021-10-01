@@ -17,11 +17,17 @@ class RemoteMovieHelper(
     override suspend fun search(query: String): List<Movie> =
         mapper.toDomainList(movieService.searchMovies(query).results)
 
+    suspend fun discover(page: Int, genre_ids: String): List<Movie> =
+        mapper.toDomainList(movieService.discoverMovies(page, genre_ids).results)
+
     override suspend fun discover(genre_ids: String): List<Movie> =
-        mapper.toDomainList(movieService.discoverMovies(genre_ids).results)
+        mapper.toDomainList(movieService.discoverMovies(1, genre_ids).results)
+
+    suspend fun getAll(page: Int): List<Movie> =
+        mapper.toDomainList(movieService.getPopularMovies(page).results)
 
     override suspend fun getAll(): List<Movie> =
-        mapper.toDomainList(movieService.getPopularMovies().results)
+        mapper.toDomainList(movieService.getPopularMovies(1).results)
 
     override suspend fun getSimilar(id: Int): List<Movie> =
         mapper.toDomainList(movieService.getSimilarMovies(id).results)

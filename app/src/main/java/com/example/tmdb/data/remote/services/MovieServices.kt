@@ -11,7 +11,7 @@ interface MovieServices {
    suspend  fun getMovieDetails(@Path("movie_id") id: Int) : MovieDetailDTO
 
     @GET("movie/popular")
-    suspend  fun getPopularMovies() : MovieSearchResponse
+    suspend  fun getPopularMovies(@Query("page") page: Int) : MovieSearchResponse
 
     @GET("movie/{movie_id}/similar")
     suspend  fun getSimilarMovies(@Path("movie_id") id: Int) : MovieSearchResponse
@@ -20,5 +20,8 @@ interface MovieServices {
     suspend fun searchMovies(@Query("query") query: String) : MovieSearchResponse
 
     @GET("discover/movie")
-    suspend fun discoverMovies(@Query("with_genres") genre_ids: String) : MovieSearchResponse
+    suspend fun discoverMovies(
+        @Query("page") page: Int,
+        @Query("with_genres") genre_ids: String
+    ) : MovieSearchResponse
 }

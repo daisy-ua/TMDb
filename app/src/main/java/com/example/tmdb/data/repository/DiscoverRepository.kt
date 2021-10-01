@@ -21,17 +21,18 @@ class DiscoverRepository(context: Application) {
 
     suspend fun clear() = localHelper.deleteAll()
 
-    fun getPopularMovies() : Flow<Resource<List<Movie>>> =
-        networkBoundResource(
-            query = { localHelper.getAll() },
-            fetch = { remoteHelper.getAll() },
-            saveFetchResult = { movies ->
-                db.withTransaction {
-                    localHelper.deleteAll()
-                    localHelper.insert(movies)
-                }
-            }
-        )
+    fun getPopularMovies(page: Int) : Flow<Resource<List<Movie>>> =
+        flow { emit (Resource.Success(remoteHelper.getAll(page))) }
+//        networkBoundResource(
+//            query = { localHelper.getAll() },
+//            fetch = { remoteHelper.getAll(page) },
+//            saveFetchResult = { movies ->
+//                db.withTransaction {
+//                    localHelper.deleteAll()
+//                    localHelper.insert(movies)
+//                }
+//            }
+//        )
 
     suspend fun getSimilarMovies(id: Int): Flow<Resource<List<Movie>>> =
         flow { emit(Resource.Success(remoteHelper.getSimilar(id))) }
@@ -39,6 +40,6 @@ class DiscoverRepository(context: Application) {
     suspend fun searchMovies(query: String) : List<Movie> =
         remoteHelper.search(query)
 
-    suspend fun discoverMovies(genre_ids: String) : Flow<Resource<List<Movie>>> =
-        flow { emit(Resource.Success(remoteHelper.discover(genre_ids))) }
+    suspend fun discoverMovies(page: Int, genre_ids: String) : Flow<Resource<List<Movie>>> =
+        flow { emit(Resource.Success(remoteHelper.discover(page, genre_ids))) }
 }

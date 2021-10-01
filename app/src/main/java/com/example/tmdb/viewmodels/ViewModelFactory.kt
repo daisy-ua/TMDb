@@ -14,5 +14,10 @@ fun getMovieDetailViewModel(owner: ViewModelStoreOwner) : MovieDetailViewModel {
     return ViewModelProvider(owner, viewModelProviderFactory)[MovieDetailViewModel::class.java]
 }
 
+fun getExploreViewModel(owner: ViewModelStoreOwner) : ExploreViewModel {
+    val viewModelProviderFactory = ExploreViewModelFactory()
+    return ViewModelProvider(owner, viewModelProviderFactory)[ExploreViewModel::class.java]
+}
+
 inline fun <reified T: ViewModel> getViewModel(owner: ViewModelStoreOwner, providerFactory: ViewModelProvider.Factory) =
     ViewModelProvider(owner, providerFactory)[T::class.java]
