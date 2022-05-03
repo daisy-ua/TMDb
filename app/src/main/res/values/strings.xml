@@ -4,4 +4,9 @@
     <string name="explore_name">Explore</string>
     <string name="details_name">Details</string>
     <string name="similar_movies">Similar movies</string>
+    <string name="year">Year</string>
+    <string name="duration">Duration</string>
+    <string name="rating">Rating</string>
+    <string name="introduction">Introduction</string>
+    <string name="trailer">Trailer</string>
 </resources>

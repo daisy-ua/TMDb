@@ -1,6 +1,7 @@
 package com.example.tmdb.ui.components
 
 import android.content.Context
+import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -9,12 +10,14 @@ import com.google.android.flexbox.FlexboxLayout
 
 fun buildTagTextView(context: Context, name: String) = TextView(context).apply {
     text = name
-    background = ContextCompat.getDrawable(context, R.drawable.container_rate)
+    setTextSize(TypedValue.COMPLEX_UNIT_SP, 14F)
+    setTextColor(ContextCompat.getColor(context, R.color.gull_gray))
+    background = ContextCompat.getDrawable(context, R.drawable.container_oval)
     layoutParams = getParams()
-    setPadding(8, 5, 8, 5)
+    setPadding(32, 12, 32, 12)
 }
 
 private fun getParams(): FlexboxLayout.LayoutParams = FlexboxLayout.LayoutParams(
     ViewGroup.LayoutParams.WRAP_CONTENT,
     ViewGroup.LayoutParams.WRAP_CONTENT
-).apply { setMargins(8, 10, 8, 10) }
+).apply { setMargins(0, 20, 16, 12) }
