@@ -9,4 +9,7 @@
     <string name="rating">Rating</string>
     <string name="introduction">Introduction</string>
     <string name="trailer">Trailer</string>
+    <string name="now_playing">Now Playing</string>
+    <string name="popular">Popular</string>
+    <string name="latest">Latest</string>
 </resources>
