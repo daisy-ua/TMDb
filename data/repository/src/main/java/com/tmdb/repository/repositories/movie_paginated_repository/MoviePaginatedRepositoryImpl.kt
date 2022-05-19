@@ -1,5 +1,6 @@
 package com.tmdb.repository.repositories.movie_paginated_repository
 
+import android.util.Log
 import com.tmdb.cache.dao.movies.MovieDao
 import com.tmdb.models.movies.MoviePaginated
 import com.tmdb.network.services.movies.MoviePaginatedService
@@ -18,6 +19,27 @@ class MoviePaginatedRepositoryImpl @Inject constructor(
     override suspend fun fetchPopularMovies(page: Int): Flow<Response<MoviePaginated>> {
         return flow {
             val remoteResponse = remoteDataSource.getPopularMovies(page)
+
+            emit(remoteResponse.let {
+                Response.Success(it.toDomain())
+            })
+        }.flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun fetchTopRatedMovies(page: Int): Flow<Response<MoviePaginated>> {
+        return flow {
+            val remoteResponse = remoteDataSource.getTopRatedMovies(page)
+            Log.d("daisy", remoteResponse.toString())
+
+            emit(remoteResponse.let {
+                Response.Success(it.toDomain())
+            })
+        }.flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun fetchNowPlayingMovies(page: Int): Flow<Response<MoviePaginated>> {
+        return flow {
+            val remoteResponse = remoteDataSource.getNowPlayingMovies(page)
 
             emit(remoteResponse.let {
                 Response.Success(it.toDomain())

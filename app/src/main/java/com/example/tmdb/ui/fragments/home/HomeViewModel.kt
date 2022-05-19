@@ -19,9 +19,33 @@ class HomeViewModel @Inject constructor(
     private val _popularMovies = MutableLiveData<Response<MoviePaginated>?>()
     val popularMovies: LiveData<Response<MoviePaginated>?> get() = _popularMovies
 
-    fun fetchPopularMovies() = viewModelScope.launch {
+    private val _nowPlayingMovies = MutableLiveData<Response<MoviePaginated>?>()
+    val nowPlayingMovies: LiveData<Response<MoviePaginated>?> get() = _nowPlayingMovies
+
+    private val _topRatedMovies = MutableLiveData<Response<MoviePaginated>?>()
+    val topRatedMovies: LiveData<Response<MoviePaginated>?> get() = _topRatedMovies
+
+    init {
+        fetchNowPlayingMovies()
+        fetchPopularMovies()
+        fetchTopRatedMovies()
+    }
+
+    private fun fetchPopularMovies() = viewModelScope.launch {
         moviePaginatedRepository.fetchPopularMovies().collect { response ->
             _popularMovies.postValue(response)
+        }
+    }
+
+    private fun fetchNowPlayingMovies() = viewModelScope.launch {
+        moviePaginatedRepository.fetchNowPlayingMovies().collect { response ->
+            _nowPlayingMovies.postValue(response)
+        }
+    }
+
+    private fun fetchTopRatedMovies() = viewModelScope.launch {
+        moviePaginatedRepository.fetchTopRatedMovies().collect { response ->
+            _topRatedMovies.postValue(response)
         }
     }
 }

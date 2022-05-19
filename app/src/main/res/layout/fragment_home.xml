@@ -68,11 +68,11 @@
             app:layout_constraintTop_toBottomOf="@id/popular_name" />
 
         <TextView
-            android:id="@+id/latest_name"
+            android:id="@+id/top_rated_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="@string/latest"
+            android:text="@string/top_rated"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -81,14 +81,14 @@
             app:layout_goneMarginTop="20dp" />
 
         <include
-            android:id="@+id/latest_shows"
+            android:id="@+id/top_rated_shows"
             layout="@layout/container_recycler_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/latest_name" />
+            app:layout_constraintTop_toBottomOf="@id/top_rated_name" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -12,6 +12,16 @@ interface MoviePaginatedService {
         @Query("page") page: Int
     ): MoviePaginatedDto
 
+    @GET("movie/now_playing")
+    suspend fun getNowPlayingMovies(
+        @Query("page") page: Int
+    ): MoviePaginatedDto
+
+    @GET("movie/top_rated")
+    suspend fun getTopRatedMovies(
+        @Query("page") page: Int
+    ): MoviePaginatedDto
+
     @GET("movie/{movie_id}/similar")
     suspend fun getSimilarMovies(
         @Path("movie_id") id: Int

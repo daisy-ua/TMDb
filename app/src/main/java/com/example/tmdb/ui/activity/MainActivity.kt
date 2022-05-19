@@ -22,7 +22,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ContentMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        appBarConfiguration()
         setupBottomNavigationView()
     }
 
@@ -31,8 +30,4 @@ class MainActivity : AppCompatActivity() {
     private fun setupBottomNavigationView() =
         binding.bottomNavigationView.setupWithNavController(navController)
 
-    private fun appBarConfiguration() {
-        val config = AppBarConfiguration(setOf(R.id.home_fragment, R.id.explore_fragment))
-        setupActionBarWithNavController(navController, config)
-    }
 }
