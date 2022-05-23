@@ -1,4 +1,4 @@
-package com.example.tmdb.utils.extensions
+package com.example.tmdb.utils.converters
 
 import android.annotation.SuppressLint
 import java.time.LocalDate

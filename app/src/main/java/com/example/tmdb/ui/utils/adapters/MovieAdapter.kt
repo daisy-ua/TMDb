@@ -35,7 +35,7 @@ class MovieAdapter(
         when (holder) {
             is MovieViewHolder -> holder.bind(item)
         }
-        holder.itemView.setOnClickListener { interaction.onItemClicked(position) }
+        holder.itemView.setOnClickListener { interaction.onItemClicked(getItemId(position)) }
     }
 
     override fun getItemCount(): Int = differ.currentList.size

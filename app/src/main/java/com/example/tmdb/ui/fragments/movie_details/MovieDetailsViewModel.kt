@@ -7,10 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.tmdb.models.movies.MovieDetails
 import com.tmdb.repository.repositories.movie_details_repository.MovieDetailsRepository
 import com.tmdb.repository.utils.Response
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MovieDetailsViewModel(
+@HiltViewModel
+class MovieDetailsViewModel @Inject constructor(
     private val movieDetailsRepository: MovieDetailsRepository
 ) : ViewModel() {
     private val _movieDetails = MutableLiveData<Response<MovieDetails>?>()

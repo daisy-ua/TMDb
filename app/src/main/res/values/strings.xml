@@ -12,4 +12,5 @@
     <string name="now_playing">Now Playing</string>
     <string name="popular">Popular</string>
     <string name="top_rated">Top Rated</string>
+    <string name="none_info">--/--</string>
 </resources>
