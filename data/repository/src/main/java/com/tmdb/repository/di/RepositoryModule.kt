@@ -1,5 +1,7 @@
 package com.tmdb.repository.di
 
+import com.tmdb.repository.repositories.discover_repository.DiscoverRepository
+import com.tmdb.repository.repositories.discover_repository.DiscoverRepositoryImpl
 import com.tmdb.repository.repositories.movie_details_repository.MovieDetailsRepository
 import com.tmdb.repository.repositories.movie_details_repository.MovieDetailsRepositoryImpl
 import com.tmdb.repository.repositories.movie_paginated_repository.MoviePaginatedRepository
@@ -21,4 +23,8 @@ abstract class RepositoryModule {
     @Binds
     @ViewModelScoped
     abstract fun bindMovieDetailsRepository(impl: MovieDetailsRepositoryImpl): MovieDetailsRepository
+
+    @Binds
+    @ViewModelScoped
+    abstract fun DiscoverRepository(impl: DiscoverRepositoryImpl): DiscoverRepository
 }

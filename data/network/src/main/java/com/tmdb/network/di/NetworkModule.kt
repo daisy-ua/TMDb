@@ -1,5 +1,6 @@
 package com.tmdb.network.di
 
+import com.tmdb.network.services.GenreService
 import com.tmdb.network.services.movies.MovieDetailsService
 import com.tmdb.network.services.movies.MoviePaginatedService
 import com.tmdb.network.utils.RequestInterceptor
@@ -45,4 +46,9 @@ object NetworkModule {
     @Singleton
     fun provideMoviePaginatedService(client: Retrofit): MoviePaginatedService =
         client.create(MoviePaginatedService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideGenreService(client: Retrofit): GenreService =
+        client.create(GenreService::class.java)
 }
