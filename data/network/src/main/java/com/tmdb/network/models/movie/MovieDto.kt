@@ -11,10 +11,10 @@ data class MovieDto(
     val overview: String?,
 
     @SerializedName("release_date")
-    val releaseDate: String,
+    val releaseDate: String?,
 
     @SerializedName("genre_ids")
-    val genreIds: List<Int>,
+    val genreIds: List<Int>?,
 
     val id: Int,
 

@@ -29,8 +29,18 @@ class MoviePaginatedRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun fetchSearchedMovies(query: String): Flow<Response<MoviePaginated>> {
-        TODO("Not yet implemented")
+    override suspend fun fetchSearchedMovies(
+        query: String,
+        page: Int
+    ): Flow<Response<MoviePaginated>> {
+        return flow {
+            val remoteResponse = remoteDataSource.searchMovies(query, page)
+
+            emit(remoteResponse.let {
+                Response.Success(it.toDomain())
+            })
+
+        }.flowOn(Dispatchers.IO)
     }
 
     override suspend fun fetchDiscoveredMovies(

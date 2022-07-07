@@ -19,7 +19,8 @@ interface MoviePaginatedService {
 
     @GET("search/movie")
     suspend fun searchMovies(
-        @Query("query") query: String
+        @Query("query") query: String,
+        @Query("page") page: Int,
     ): MoviePaginatedDto
 
     @GET("discover/movie")

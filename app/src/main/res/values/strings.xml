@@ -17,4 +17,5 @@
     <string name="search_name">Search</string>
     <string name="filters">Filters</string>
     <string name="apply_filters">Apply filters</string>
+    <string name="not_found_msg">No Results Found</string>
 </resources>

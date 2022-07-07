@@ -57,6 +57,13 @@ class ExploreViewModel @Inject constructor(
         }
     }
 
+    fun fetchSearchedMovies(query: String) = viewModelScope.launch {
+        movieRepository.fetchSearchedMovies(query)
+            .collect { response ->
+                _movies.postValue(response)
+            }
+    }
+
     private fun fetchGenres() = viewModelScope.launch {
         discoverRepository.fetchMovieGenres().collect { response ->
             _genres.postValue(response)
