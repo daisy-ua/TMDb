@@ -1,4 +1,4 @@
-package com.example.tmdb.ui.fragments.explore
+package com.example.tmdb.ui.fragments.explore.filters
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +10,7 @@ import com.example.tmdb.constants.FilterKeys
 import com.example.tmdb.constants.SortOption
 import com.example.tmdb.databinding.FragmentExploreFiltersBinding
 import com.example.tmdb.ui.components.buildTagChip
+import com.example.tmdb.ui.fragments.explore.ExploreViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tmdb.models.Genre
 import com.tmdb.repository.utils.Response
@@ -44,6 +45,7 @@ class ExploreFiltersFragment : BottomSheetDialogFragment() {
 
     private val onApplyFiltersClickListener = View.OnClickListener {
         applyFilters()
+        viewModel.fetchMovies()
         this@ExploreFiltersFragment.dismiss()
     }
 
@@ -52,6 +54,11 @@ class ExploreFiltersFragment : BottomSheetDialogFragment() {
             binding.sortByContainer.checkedChipId,
             binding.genreContainer.checkedChipIds
         )
+
+        viewModel.queryFormatFilters.apply {
+            setSortBy(binding.sortByContainer.checkedChipId)
+            setWithGenres(binding.genreContainer.checkedChipIds)
+        }
     }
 
     private val genreLoadingObserver = Observer<Response<List<Genre>>?> { response ->

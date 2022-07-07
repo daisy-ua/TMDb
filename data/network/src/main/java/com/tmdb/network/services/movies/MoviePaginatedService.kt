@@ -25,6 +25,8 @@ interface MoviePaginatedService {
     @GET("discover/movie")
     suspend fun discoverMovies(
         @Query("page") page: Int,
-        @Query("with_genres") genreIds: String
+        @Query("with_genres") genreIds: String?,
+        @Query("sort_by") sortBy: String?,
+        @Query("include_adult") includeAdult: Boolean,
     ): MoviePaginatedDto
 }

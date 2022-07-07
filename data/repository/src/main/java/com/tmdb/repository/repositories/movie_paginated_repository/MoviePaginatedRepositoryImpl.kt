@@ -34,9 +34,18 @@ class MoviePaginatedRepositoryImpl @Inject constructor(
     }
 
     override suspend fun fetchDiscoveredMovies(
-        genreIds: String,
+        sortBy: String?,
+        genreIds: String?,
         page: Int,
+        includeAdult: Boolean
     ): Flow<Response<MoviePaginated>> {
-        TODO("Not yet implemented")
+        return flow {
+            val remoteResponse = remoteDataSource.discoverMovies(page, genreIds, sortBy, includeAdult)
+
+            emit(remoteResponse.let {
+                Response.Success(it.toDomain())
+            })
+
+        }.flowOn(Dispatchers.IO)
     }
 }

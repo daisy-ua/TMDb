@@ -19,22 +19,25 @@ class MovieDetailsRepositoryImpl @Inject constructor(
 
     override suspend fun fetchMovieDetails(movieId: Int): Flow<Response<MovieDetails>?> {
         return flow {
-            val cacheResponseEntity = localDataSource.getMovieDetails(movieId)
+//            val cacheResponseEntity = localDataSource.getMovieDetails(movieId)
 
-            val cacheResponse = cacheResponseEntity?.toDomain()
+//            val cacheResponse = cacheResponseEntity?.toDomain()
 
-            emit(Response.Loading(cacheResponse))
+//            emit(Response.Loading(cacheResponse))
 
             val fetchResponse = remoteDatasource.getMovieDetails(movieId)
 
-            fetchResponse.let {
-                localDataSource.saveMovieDetails(it.toEntity())
-                emit(Response.Success(it.toDomain()))
-            }
+//            fetchResponse.let {
+//                localDataSource.saveMovieDetails(it.toEntity())
+//                emit(Response.Success(it.toDomain()))
+//            }
 
             emit(fetchResponse.let {
-                Response.Loading(it.toDomain())
+                Response.Success(it.toDomain())
             })
+//            emit(fetchResponse.let {
+//                Response.Loading(it.toDomain())
+//            })
 
         }.flowOn(Dispatchers.IO)
     }

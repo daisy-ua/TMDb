@@ -1,18 +1,20 @@
 package com.example.tmdb.constants
 
-class DiscoverFilters private constructor(
-    val sortBy: String?,
-    val withGenres: String?,
-) {
-    data class Builder(
-        private var sortBy: String? = null,
-        private var withGenres: String? = null,
-    ) {
-        fun sortBy(option: String) = apply { this.sortBy = option }
+class DiscoverFilters {
+    var sortBy: String? = null
+        private set
 
-        fun withGenres(genreIds: List<Int>) =
-            apply { this.withGenres = genreIds.joinToString { "$it" } }
+    var withGenres: String? = null
+        private set
 
-        fun build() = DiscoverFilters(sortBy, withGenres)
+    fun setSortBy(sortByPosition: Int?, isAscending: Boolean = false) {
+        sortByPosition?.let {
+            this.sortBy =
+                SortOption.values()[sortByPosition].id + if (isAscending) ".asc" else ".desc"
+        }
+    }
+
+    fun setWithGenres(genreIds: List<Int>) {
+        this.withGenres = genreIds.joinToString { "$it" }
     }
 }

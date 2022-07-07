@@ -7,15 +7,14 @@
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/show_image"
         android:layout_width="0dp"
-        android:layout_height="210dp"
+        android:layout_height="150dp"
         android:adjustViewBounds="true"
         android:contentDescription="@string/app_name"
-        android:scaleType="fitCenter"
+        android:scaleType="centerCrop"
         app:layout_constraintDimensionRatio="w,2:3"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10dp" />
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize8dp" />
 
     <TextView
         android:id="@+id/show_title"
@@ -26,7 +25,7 @@
         android:maxWidth="140dp"
         android:maxLines="2"
         android:padding="4dp"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -38,9 +37,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:background="@drawable/container_rate"
-        android:paddingHorizontal="4dp"
+        android:paddingHorizontal="8dp"
         android:paddingVertical="2dp"
-        android:textSize="14sp"
+        android:textSize="12sp"
         app:layout_constraintRight_toRightOf="@id/show_image"
         app:layout_constraintTop_toTopOf="@id/show_image" />
 
