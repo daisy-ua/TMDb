@@ -8,8 +8,9 @@ import com.tmdb.models.movies.Movie
 import com.tmdb.models.movies.MovieDetails
 import com.tmdb.models.movies.MoviePaginated
 import com.tmdb.network.models.CountryDto
-import com.tmdb.network.models.GenreDto
 import com.tmdb.network.models.SpokenLanguageDto
+import com.tmdb.network.models.genre.GenreDto
+import com.tmdb.network.models.genre.GenreListDto
 import com.tmdb.network.models.movie.MovieDetailsDto
 import com.tmdb.network.models.movie.MovieDto
 import com.tmdb.network.models.movie.MoviePaginatedDto
@@ -19,8 +20,8 @@ internal fun MovieDto.toDomain(): Movie {
         posterPath = posterPath,
         adult = adult,
         overview = overview,
-        releaseDate = releaseDate,
-        genreIds = genreIds,
+        releaseDate = releaseDate ?: "",
+        genreIds = genreIds ?: listOf(),
         id = id,
         originalTitle = originalTitle,
         originalLanguage = originalLanguage,
@@ -70,6 +71,8 @@ internal fun MoviePaginatedDto.toDomain(): MoviePaginated {
 }
 
 internal fun GenreDto.toDomain() = Genre(id, name)
+
+internal fun GenreListDto.toDomain() = genres.map { dto -> dto.toDomain() }
 
 internal fun CountryDto.toDomain() = Country(code, name)
 

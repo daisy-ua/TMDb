@@ -1,20 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ui.fragments.explore.ExploreFragment">
+    android:layout_marginHorizontal="16dp">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/genres_bar"
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabIndicatorHeight="1dp" />
+        android:layout_marginTop="16dp"
+        android:background="@drawable/container_oval"
+        app:iconifiedByDefault="false"
+        app:layout_constraintTop_toTopOf="parent"
+        app:queryBackground="@android:color/transparent"
+        app:searchHintIcon="@null"
+        app:searchIcon="@drawable/ic_search" />
 
     <include
-        android:id="@+id/content_list"
-        layout="@layout/container_recycler_view" />
+        android:id="@+id/search_result"
+        layout="@layout/container_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_bar" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/not_found_msg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/not_found_msg"
+        android:textSize="24sp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/search_bar" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/filters_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/filters"
+        app:chipEndPadding="12dp"
+        app:chipIcon="@drawable/ic_filter_list"
+        app:chipIconSize="18dp"
+        app:chipMinHeight="34dp"
+        app:chipStartPadding="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

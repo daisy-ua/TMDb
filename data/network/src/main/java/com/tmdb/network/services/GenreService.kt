@@ -1,10 +1,10 @@
 package com.tmdb.network.services
 
-import com.tmdb.network.models.GenreDto
+import com.tmdb.network.models.genre.GenreListDto
 import retrofit2.http.GET
 
 interface GenreService {
 
     @GET("genre/movie/list")
-    suspend  fun getGenres() : List<Result<GenreDto>>
+    suspend fun fetchMovieGenres(): GenreListDto
 }

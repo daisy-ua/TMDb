@@ -14,10 +14,15 @@ interface MoviePaginatedRepository {
 
     suspend fun fetchSimilarMovies(movieId: Int): Flow<Response<MoviePaginated>>
 
-    suspend fun fetchSearchedMovies(query: String): Flow<Response<MoviePaginated>>
+    suspend fun fetchSearchedMovies(
+        query: String,
+        page: Int = 1,
+    ): Flow<Response<MoviePaginated>>
 
     suspend fun fetchDiscoveredMovies(
-        genreIds: String,
+        sortBy: String?,
+        genreIds: String?,
         page: Int = 1,
+        includeAdult: Boolean = false,
     ): Flow<Response<MoviePaginated>>
 }

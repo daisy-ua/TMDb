@@ -1,4 +1,4 @@
-package com.tmdb.network.models
+package com.tmdb.network.models.genre
 
 data class GenreDto(
     val id: Int,

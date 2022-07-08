@@ -2,7 +2,7 @@ package com.tmdb.network.models.movie
 
 import com.google.gson.annotations.SerializedName
 import com.tmdb.network.models.CountryDto
-import com.tmdb.network.models.GenreDto
+import com.tmdb.network.models.genre.GenreDto
 import com.tmdb.network.models.SpokenLanguageDto
 
 data class MovieDetailsDto(

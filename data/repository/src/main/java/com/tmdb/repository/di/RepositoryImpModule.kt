@@ -2,8 +2,10 @@ package com.tmdb.repository.di
 
 import com.tmdb.cache.dao.movies.MovieDao
 import com.tmdb.cache.dao.movies.MovieDetailsDao
+import com.tmdb.network.services.GenreService
 import com.tmdb.network.services.movies.MovieDetailsService
 import com.tmdb.network.services.movies.MoviePaginatedService
+import com.tmdb.repository.repositories.discover_repository.DiscoverRepositoryImpl
 import com.tmdb.repository.repositories.movie_details_repository.MovieDetailsRepositoryImpl
 import com.tmdb.repository.repositories.movie_paginated_repository.MoviePaginatedRepositoryImpl
 import dagger.Module
@@ -29,4 +31,10 @@ object RepositoryImpModule {
         localSource: MovieDetailsDao,
         remoteSource: MovieDetailsService,
     ): MovieDetailsRepositoryImpl = MovieDetailsRepositoryImpl(localSource, remoteSource)
+
+    @Provides
+    @Singleton
+    fun provideDiscoverRepository(
+        genreDataSource: GenreService
+    ): DiscoverRepositoryImpl = DiscoverRepositoryImpl(genreDataSource)
 }

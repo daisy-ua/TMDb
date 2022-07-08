@@ -4,8 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.tmdb.R
 import com.example.tmdb.databinding.ContentMainBinding
@@ -29,5 +27,4 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupBottomNavigationView() =
         binding.bottomNavigationView.setupWithNavController(navController)
-
 }

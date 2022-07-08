@@ -13,4 +13,11 @@
     <string name="popular">Popular</string>
     <string name="top_rated">Top Rated</string>
     <string name="none_info">--/--</string>
+    <string name="latest">Latest</string>
+    <string name="genres">Genres</string>
+    <string name="order_by">Order by</string>
+    <string name="search_name">Search</string>
+    <string name="filters">Filters</string>
+    <string name="apply_filters">Apply filters</string>
+    <string name="not_found_msg">No Results Found</string>
 </resources>
