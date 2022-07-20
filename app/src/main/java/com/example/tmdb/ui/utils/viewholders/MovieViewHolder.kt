@@ -1,4 +1,4 @@
-package com.example.tmdb.ui.utils.adapters.viewholders
+package com.example.tmdb.ui.utils.viewholders
 
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tmdb.databinding.ContainerShowImplicitBinding

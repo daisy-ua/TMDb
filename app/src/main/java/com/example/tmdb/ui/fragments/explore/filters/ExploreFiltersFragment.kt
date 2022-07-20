@@ -1,5 +1,6 @@
 package com.example.tmdb.ui.fragments.explore.filters
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -32,9 +33,13 @@ class ExploreFiltersFragment : BottomSheetDialogFragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onResume() {
+        super.onResume()
         checkSelectedSortOption()
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        binding.sortByContainer.clearCheck()
     }
 
     private fun setupListeners() {
@@ -45,7 +50,6 @@ class ExploreFiltersFragment : BottomSheetDialogFragment() {
 
     private val onApplyFiltersClickListener = View.OnClickListener {
         applyFilters()
-        viewModel.fetchMovies()
         this@ExploreFiltersFragment.dismiss()
     }
 
@@ -54,11 +58,6 @@ class ExploreFiltersFragment : BottomSheetDialogFragment() {
             binding.sortByContainer.checkedChipId,
             binding.genreContainer.checkedChipIds
         )
-
-        viewModel.queryFormatFilters.apply {
-            setSortBy(binding.sortByContainer.checkedChipId)
-            setWithGenres(binding.genreContainer.checkedChipIds)
-        }
     }
 
     private val genreLoadingObserver = Observer<Response<List<Genre>>?> { response ->

@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tmdb.R
 import com.example.tmdb.components.getRecyclerViewDataSetupObserver
 import com.example.tmdb.databinding.FragmentHomeBinding
-import com.example.tmdb.ui.components.MarginItemDecoration
-import com.example.tmdb.ui.components.setupRecyclerView
+import com.example.tmdb.ui.components.recyclerview.setupRecyclerView
 import com.example.tmdb.ui.utils.adapters.MovieAdapter
 import com.example.tmdb.ui.utils.interactions.Interaction
+import com.example.tmdb.ui.utils.rvdecorators.LinearItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -40,7 +40,7 @@ class HomeFragment : Fragment(), Interaction {
     }
 
     private fun setupRecyclerView(rv: RecyclerView) {
-        val itemDecoration = MarginItemDecoration(resources.getDimension(R.dimen.rv_item_margin))
+        val itemDecoration = LinearItemDecoration(resources.getDimension(R.dimen.rv_item_margin))
 
         setupRecyclerView(
             rv,

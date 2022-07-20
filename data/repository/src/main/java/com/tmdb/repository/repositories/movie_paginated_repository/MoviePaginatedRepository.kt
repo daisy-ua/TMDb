@@ -1,5 +1,7 @@
 package com.tmdb.repository.repositories.movie_paginated_repository
 
+import androidx.paging.PagingData
+import com.tmdb.models.movies.Movie
 import com.tmdb.models.movies.MoviePaginated
 import com.tmdb.repository.utils.Response
 import kotlinx.coroutines.flow.Flow
@@ -14,15 +16,12 @@ interface MoviePaginatedRepository {
 
     suspend fun fetchSimilarMovies(movieId: Int): Flow<Response<MoviePaginated>>
 
-    suspend fun fetchSearchedMovies(
-        query: String,
-        page: Int = 1,
-    ): Flow<Response<MoviePaginated>>
-
-    suspend fun fetchDiscoveredMovies(
-        sortBy: String?,
-        genreIds: String?,
-        page: Int = 1,
+    suspend fun fetchMovieDiscoverResult(
+        options: Map<String, String> = mapOf(),
         includeAdult: Boolean = false,
-    ): Flow<Response<MoviePaginated>>
+    ): Flow<PagingData<Movie>>
+
+    suspend fun fetchMovieSearchResult(
+        query: String,
+    ): Flow<PagingData<Movie>>
 }

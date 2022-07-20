@@ -1,4 +1,4 @@
-package com.example.tmdb.ui.components
+package com.example.tmdb.ui.components.recyclerview
 
 import android.util.Log
 import androidx.lifecycle.Observer

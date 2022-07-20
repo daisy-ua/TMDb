@@ -4,14 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tmdb.constants.DiscoverFilters
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.tmdb.constants.FilterKeys
+import com.example.tmdb.utils.converters.QueryFormatFiltersConverter
 import com.tmdb.models.Genre
-import com.tmdb.models.movies.MoviePaginated
+import com.tmdb.models.movies.Movie
 import com.tmdb.repository.repositories.discover_repository.DiscoverRepository
 import com.tmdb.repository.repositories.movie_paginated_repository.MoviePaginatedRepository
 import com.tmdb.repository.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,9 +24,6 @@ class ExploreViewModel @Inject constructor(
     private val movieRepository: MoviePaginatedRepository,
     private val discoverRepository: DiscoverRepository,
 ) : ViewModel() {
-    private val _movies = MutableLiveData<Response<MoviePaginated>?>()
-    val movies: LiveData<Response<MoviePaginated>?> get() = _movies
-
     private val _genres = MutableLiveData<Response<List<Genre>>?>()
     val genres: LiveData<Response<List<Genre>>?> get() = _genres
 
@@ -40,29 +40,37 @@ class ExploreViewModel @Inject constructor(
         }
     }
 
-    val queryFormatFilters = DiscoverFilters()
+    private val queryFormatConverter = QueryFormatFiltersConverter
+
+    @Suppress("UNCHECKED_CAST")
+    private val discoverOptions: Map<String, String>
+        get() = mutableMapOf<String, String>().apply {
+            filters.value?.let { filters ->
+                (filters[FilterKeys.SORT_BY] as Int).let { sortBy ->
+                    if (sortBy != -1) {
+                        put(FilterKeys.SORT_BY, queryFormatConverter.getSortBy(sortBy))
+                    }
+                }
+
+                (filters[FilterKeys.WITH_GENRES] as List<Int>?)?.let { withGenres ->
+                    put(FilterKeys.WITH_GENRES, queryFormatConverter.getWithGenres(withGenres))
+                }
+            }
+        }
 
     init {
-        fetchMovies()
-
         fetchGenres()
     }
 
-    fun fetchMovies() = viewModelScope.launch {
-        movieRepository.fetchDiscoveredMovies(
-            genreIds = queryFormatFilters.withGenres,
-            sortBy = queryFormatFilters.sortBy,
-        ).collect { response ->
-            _movies.postValue(response)
-        }
-    }
+    suspend fun fetchMovieDiscoverResult(): Flow<PagingData<Movie>> =
+        movieRepository
+            .fetchMovieDiscoverResult(discoverOptions)
+            .cachedIn(viewModelScope)
 
-    fun fetchSearchedMovies(query: String) = viewModelScope.launch {
-        movieRepository.fetchSearchedMovies(query)
-            .collect { response ->
-                _movies.postValue(response)
-            }
-    }
+    suspend fun fetchMovieSearchResult(query: String) =
+        movieRepository
+            .fetchMovieSearchResult(query)
+            .cachedIn(viewModelScope)
 
     private fun fetchGenres() = viewModelScope.launch {
         discoverRepository.fetchMovieGenres().collect { response ->

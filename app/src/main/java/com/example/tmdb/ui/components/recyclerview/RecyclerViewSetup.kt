@@ -1,4 +1,4 @@
-package com.example.tmdb.ui.components
+package com.example.tmdb.ui.components.recyclerview
 
 import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,14 +8,15 @@ fun setupRecyclerView(
     rv: RecyclerView,
     context: Context?,
     adapter: RecyclerView.Adapter<*>,
-    layout: LinearLayoutManager = LinearLayoutManager(
+    layout: RecyclerView.LayoutManager = LinearLayoutManager(
         context,
         LinearLayoutManager.HORIZONTAL,
         false
     ),
+    hasFixedSize: Boolean = true,
     itemDecoration: RecyclerView.ItemDecoration? = null,
 ) = with(rv) {
-    setHasFixedSize(true)
+    setHasFixedSize(hasFixedSize)
     this.layoutManager = layout
     this.adapter = adapter
     itemDecoration?.let { itemDecoration ->

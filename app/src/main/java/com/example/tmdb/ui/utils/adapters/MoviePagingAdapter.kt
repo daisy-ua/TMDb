@@ -2,28 +2,19 @@ package com.example.tmdb.ui.utils.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tmdb.databinding.ContainerShowImplicitBinding
 import com.example.tmdb.ui.utils.MovieComparator
 import com.example.tmdb.ui.utils.viewholders.MovieViewHolder
 import com.example.tmdb.ui.utils.interactions.Interaction
 import com.tmdb.models.movies.Movie
+import javax.inject.Inject
 
-class MovieAdapter(
+class MoviePagingAdapter @Inject constructor(
     private val interaction: Interaction,
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : PagingDataAdapter<Movie, RecyclerView.ViewHolder>(MovieComparator) {
     private lateinit var binding: ContainerShowImplicitBinding
-    private val diffCallback = MovieComparator
-    private val differ = AsyncListDiffer(this, diffCallback)
-
-    init {
-        setHasStableIds(true)
-    }
-
-    override fun getItemViewType(position: Int): Int = position
-
-    override fun getItemId(position: Int): Long = differ.currentList[position].id.toLong()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -32,14 +23,13 @@ class MovieAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item = differ.currentList[position]
-        when (holder) {
-            is MovieViewHolder -> holder.bind(item)
+        getItem(position)?.let { movie ->
+            if (holder is MovieViewHolder) {
+                holder.bind(movie)
+                holder.itemView.setOnClickListener {
+                    interaction.onItemClicked(movie.id.toLong())
+                }
+            }
         }
-        holder.itemView.setOnClickListener { interaction.onItemClicked(getItemId(position)) }
     }
-
-    override fun getItemCount(): Int = differ.currentList.size
-
-    fun submitList(list: List<Movie>) = differ.submitList(list)
 }

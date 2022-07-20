@@ -1,10 +1,16 @@
 package com.tmdb.repository.repositories.movie_paginated_repository
 
 import android.util.Log
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.tmdb.cache.dao.movies.MovieDao
+import com.tmdb.models.movies.Movie
 import com.tmdb.models.movies.MoviePaginated
 import com.tmdb.network.services.movies.MoviePaginatedService
 import com.tmdb.repository.mappers.toDomain
+import com.tmdb.repository.repositories.movie_paginated_repository.source.MovieDiscoverPagingSource
+import com.tmdb.repository.repositories.movie_paginated_repository.source.MovieSearchPagingSource
 import com.tmdb.repository.utils.Response
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -29,7 +35,6 @@ class MoviePaginatedRepositoryImpl @Inject constructor(
     override suspend fun fetchTopRatedMovies(page: Int): Flow<Response<MoviePaginated>> {
         return flow {
             val remoteResponse = remoteDataSource.getTopRatedMovies(page)
-            Log.d("daisy", remoteResponse.toString())
 
             emit(remoteResponse.let {
                 Response.Success(it.toDomain())
@@ -51,33 +56,28 @@ class MoviePaginatedRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun fetchSearchedMovies(
-        query: String,
-        page: Int
-    ): Flow<Response<MoviePaginated>> {
-        return flow {
-            val remoteResponse = remoteDataSource.searchMovies(query, page)
-
-            emit(remoteResponse.let {
-                Response.Success(it.toDomain())
-            })
-
-        }.flowOn(Dispatchers.IO)
+    override suspend fun fetchMovieDiscoverResult(
+        options: Map<String, String>,
+        includeAdult: Boolean,
+    ): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { MovieDiscoverPagingSource(remoteDataSource, options) }
+        ).flow
     }
 
-    override suspend fun fetchDiscoveredMovies(
-        sortBy: String?,
-        genreIds: String?,
-        page: Int,
-        includeAdult: Boolean
-    ): Flow<Response<MoviePaginated>> {
-        return flow {
-            val remoteResponse = remoteDataSource.discoverMovies(page, genreIds, sortBy, includeAdult)
-
-            emit(remoteResponse.let {
-                Response.Success(it.toDomain())
-            })
-
-        }.flowOn(Dispatchers.IO)
+    override suspend fun fetchMovieSearchResult(
+        query: String,
+    ): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { MovieSearchPagingSource(remoteDataSource, query) }
+        ).flow
     }
 }

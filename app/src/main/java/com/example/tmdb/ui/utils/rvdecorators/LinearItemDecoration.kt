@@ -1,14 +1,10 @@
-package com.example.tmdb.ui.components
+package com.example.tmdb.ui.utils.rvdecorators
 
-import android.content.res.Resources
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import kotlin.math.roundToInt
 
-private val Float.toPx get() = (this * Resources.getSystem().displayMetrics.density).roundToInt()
-
-class MarginItemDecoration(
+class LinearItemDecoration(
     spaceSizeDp: Float,
 ) : RecyclerView.ItemDecoration() {
     private val spaceSize = spaceSizeDp.toPx
