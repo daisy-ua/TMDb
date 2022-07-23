@@ -6,16 +6,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.tmdb.constants.FilterKeys
-import com.example.tmdb.utils.converters.QueryFormatFiltersConverter
+import com.example.tmdb.constants.AppConstants.DEFAULT_QUERY
+import com.example.tmdb.ui.utils.uistate.UiAction
+import com.example.tmdb.ui.utils.uistate.UiState
+import com.example.tmdb.utils.getFiltersFormatted
 import com.tmdb.models.Genre
 import com.tmdb.models.movies.Movie
 import com.tmdb.repository.repositories.discover_repository.DiscoverRepository
 import com.tmdb.repository.repositories.movie_paginated_repository.MoviePaginatedRepository
 import com.tmdb.repository.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,50 +28,81 @@ class ExploreViewModel @Inject constructor(
     private val _genres = MutableLiveData<Response<List<Genre>>?>()
     val genres: LiveData<Response<List<Genre>>?> get() = _genres
 
-    private val _filters = MutableLiveData<MutableMap<String, Any>>(mutableMapOf(
-        FilterKeys.SORT_BY to 0
-    ))
+    val state: StateFlow<UiState>
 
-    val filters: LiveData<MutableMap<String, Any>> get() = _filters
+    var pagingDataFlow: Flow<PagingData<Movie>>
 
-    fun setFilters(sortBy: Int, withGenres: List<Int>) {
-        _filters.value = filters.value?.also { _map ->
-            _map[FilterKeys.SORT_BY] = sortBy
-            _map[FilterKeys.WITH_GENRES] = withGenres
-        }
-    }
+    val accept: (UiAction) -> Unit
 
-    private val queryFormatConverter = QueryFormatFiltersConverter
+    var filters: Map<String, *>? = null
+        private set
 
-    @Suppress("UNCHECKED_CAST")
     private val discoverOptions: Map<String, String>
-        get() = mutableMapOf<String, String>().apply {
-            filters.value?.let { filters ->
-                (filters[FilterKeys.SORT_BY] as Int).let { sortBy ->
-                    if (sortBy != -1) {
-                        put(FilterKeys.SORT_BY, queryFormatConverter.getSortBy(sortBy))
-                    }
-                }
-
-                (filters[FilterKeys.WITH_GENRES] as List<Int>?)?.let { withGenres ->
-                    put(FilterKeys.WITH_GENRES, queryFormatConverter.getWithGenres(withGenres))
-                }
-            }
-        }
+        get() = getFiltersFormatted(state.value.filters)
 
     init {
+        val actionStateFlow = MutableSharedFlow<UiAction>()
+
+        val searches = actionStateFlow
+            .filterIsInstance<UiAction.Search>()
+            .distinctUntilChanged()
+            .onStart { emit(UiAction.Search(query = DEFAULT_QUERY)) }
+
+        val queriesScrolled = actionStateFlow
+            .filterIsInstance<UiAction.Scroll>()
+            .distinctUntilChanged()
+            .shareIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+                replay = 1
+            )
+            .onStart { emit(UiAction.Scroll(currentQuery = DEFAULT_QUERY)) }
+
+        pagingDataFlow = searches
+            .flatMapLatest {
+                if (it.query.isNotEmpty()) fetchMovieSearchResult(it.query)
+                else fetchMovieDiscoverResult()
+            }
+            .cachedIn(viewModelScope)
+
+        state = combine(
+            searches,
+            queriesScrolled,
+            ::Pair
+        ).map { (search, scroll) ->
+            UiState(
+                query = search.query,
+                filters = search.filters,
+                lastQueryScrolled = scroll.currentQuery,
+                hasNotScrolledForCurrentSearch = search.query != scroll.currentQuery,
+            )
+        }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+                initialValue = UiState(
+                    filters = filters
+                )
+            )
+
+        accept = { action ->
+            viewModelScope.launch { actionStateFlow.emit(action) }
+        }
+
         fetchGenres()
     }
 
-    suspend fun fetchMovieDiscoverResult(): Flow<PagingData<Movie>> =
+    fun saveCurrentDataState() {
+        filters = state.value.filters
+    }
+
+    private suspend fun fetchMovieDiscoverResult(): Flow<PagingData<Movie>> =
         movieRepository
             .fetchMovieDiscoverResult(discoverOptions)
-            .cachedIn(viewModelScope)
 
-    suspend fun fetchMovieSearchResult(query: String) =
+    private suspend fun fetchMovieSearchResult(query: String) =
         movieRepository
             .fetchMovieSearchResult(query)
-            .cachedIn(viewModelScope)
 
     private fun fetchGenres() = viewModelScope.launch {
         discoverRepository.fetchMovieGenres().collect { response ->

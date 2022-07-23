@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,19 +16,22 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.tmdb.R
 import com.example.tmdb.databinding.FragmentExploreBinding
 import com.example.tmdb.ui.components.recyclerview.setupRecyclerView
 import com.example.tmdb.ui.fragments.explore.filters.ExploreFiltersFragment
-import com.example.tmdb.ui.utils.DebounceQueryTextListener
 import com.example.tmdb.ui.utils.adapters.MoviePagingAdapter
 import com.example.tmdb.ui.utils.interactions.Interaction
 import com.example.tmdb.ui.utils.loadstate.PagingLoadStateAdapter
 import com.example.tmdb.ui.utils.rvdecorators.GridItemDecorator
+import com.example.tmdb.ui.utils.uistate.UiAction
+import com.example.tmdb.ui.utils.uistate.UiState
+import com.tmdb.models.movies.Movie
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -42,8 +46,6 @@ class ExploreFragment : Fragment(), Interaction {
         footer = PagingLoadStateAdapter(adapter::retry)
     )
 
-    private var discoverJob: Job? = null
-
     private val filtersDialog: ExploreFiltersFragment by lazy {
         ExploreFiltersFragment()
     }
@@ -54,14 +56,21 @@ class ExploreFragment : Fragment(), Interaction {
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentExploreBinding.inflate(inflater, container, false)
-        setupView()
-        setupListeners()
+
+        setupListView()
+
+        binding.bindState(
+            uiState = viewModel.state,
+            pagingData = viewModel.pagingDataFlow,
+            uiActions = viewModel.accept
+        )
+
         return binding.root
     }
 
-    private fun setupView() {
+    private fun setupListView() {
         val itemDecoration =
-            GridItemDecorator(3, resources.getDimension(R.dimen.rv_item_margin))
+            GridItemDecorator(3, resources.getDimension(R.dimen.rv_item_margin_small))
 
         try {
             setupRecyclerView(
@@ -80,50 +89,98 @@ class ExploreFragment : Fragment(), Interaction {
         }
     }
 
+    override fun onStop() {
+        viewModel.saveCurrentDataState()
+        super.onStop()
+    }
+
     @SuppressLint("ClickableViewAccessibility")
-    private fun setupListeners() {
-        binding.filtersBtn.setOnClickListener { showFiltersDialog() }
+    private fun FragmentExploreBinding.bindState(
+        uiState: StateFlow<UiState>,
+        pagingData: Flow<PagingData<Movie>>,
+        uiActions: (UiAction) -> Unit,
+    ) {
+        root.setOnTouchListener { _, _ -> hideSoftKeyboard() }
 
-        viewModel.filters.observe(viewLifecycleOwner) { discoverMovies() }
+        filtersBtn.setOnClickListener { showFiltersDialog() }
 
-        binding.searchBar.setOnQueryTextListener(
-            DebounceQueryTextListener(viewLifecycleOwner.lifecycle, search)
+        bindSearchView(
+            uiState = uiState,
+            onQueryChanged = uiActions
         )
 
-        binding.root.setOnTouchListener { _, _ -> hideSoftKeyboard() }
-
-        adapter.addLoadStateListener(::loadState)
+        bindRecyclerView(
+            uiState = uiState,
+            pagingData = pagingData,
+            onScrollChanged = uiActions
+        )
     }
 
-    private fun discoverMovies() {
-        discoverJob?.cancel()
-        discoverJob = viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.fetchMovieDiscoverResult().collectLatest { movies ->
-                adapter.submitData(movies)
+    private fun FragmentExploreBinding.bindSearchView(
+        uiState: StateFlow<UiState>,
+        onQueryChanged: (UiAction) -> Unit,
+    ) {
+        searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+
+            override fun onQueryTextSubmit(p0: String?) = false
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let { query ->
+                    onQueryChanged(UiAction.Search(
+                        query = query,
+                        filters = uiState.value.filters ?: uiState.value.filters
+                    ))
+                }
+                return false
+            }
+        })
+    }
+
+    private fun FragmentExploreBinding.bindRecyclerView(
+        uiState: StateFlow<UiState>,
+        pagingData: Flow<PagingData<Movie>>,
+        onScrollChanged: (UiAction) -> Unit,
+    ) {
+        searchResult.rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy != 0) onScrollChanged(UiAction.Scroll(currentQuery = uiState.value.query))
+            }
+        })
+
+        val notLoading = adapter.loadStateFlow
+            .map { it.source.refresh is LoadState.NotLoading }
+
+        val hasNotScrolledForCurrentSearch = uiState
+            .map { it.hasNotScrolledForCurrentSearch }
+            .distinctUntilChanged()
+
+        val hasFiltersUpdated = uiState
+            .map { it.filters }
+            .map { filters -> filters != null && viewModel.filters.hashCode() != filters.hashCode() }
+            .distinctUntilChanged()
+
+        val shouldScrollToTop = combine(
+            notLoading,
+            hasNotScrolledForCurrentSearch,
+            hasFiltersUpdated,
+        ) { (notLoading, notScrolled, hasFiltersUpdated) ->
+            notLoading && (notScrolled || hasFiltersUpdated)
+        }
+            .distinctUntilChanged()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            pagingData.collectLatest(adapter::submitData)
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            shouldScrollToTop.collect { shouldScroll ->
+                if (shouldScroll) searchResult.rv.scrollToPosition(0)
             }
         }
-    }
 
-    private fun searchMovies(query: String) {
-        discoverJob?.cancel()
-        discoverJob = viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.fetchMovieSearchResult(query).collectLatest { movies ->
-                adapter.submitData(movies)
-            }
-        }
-    }
-
-    private val search: (String?) -> Unit = { _query ->
-        _query?.let { query ->
-            if (_query.isEmpty()) {
-                binding.searchResult.rv.adapter = pagingAdapter
-                discoverMovies()
-                binding.filtersBtn.visibility = View.VISIBLE
-            } else {
-                binding.searchResult.rv.adapter = adapter
-                searchMovies(query)
-                binding.filtersBtn.visibility = View.GONE
-            }
+        viewLifecycleOwner.lifecycleScope.launch {
+            adapter.loadStateFlow.collect(::loadState)
         }
     }
 

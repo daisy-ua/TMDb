@@ -7,11 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import com.example.tmdb.constants.AppConstants.DEFAULT_QUERY
 import com.example.tmdb.constants.FilterKeys
 import com.example.tmdb.constants.SortOption
 import com.example.tmdb.databinding.FragmentExploreFiltersBinding
 import com.example.tmdb.ui.components.buildTagChip
 import com.example.tmdb.ui.fragments.explore.ExploreViewModel
+import com.example.tmdb.ui.utils.uistate.UiAction
+import com.example.tmdb.utils.getFilterMap
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tmdb.models.Genre
 import com.tmdb.repository.utils.Response
@@ -54,9 +57,14 @@ class ExploreFiltersFragment : BottomSheetDialogFragment() {
     }
 
     private fun applyFilters() {
-        viewModel.setFilters(
-            binding.sortByContainer.checkedChipId,
-            binding.genreContainer.checkedChipIds
+        viewModel.accept(
+            UiAction.Search(
+                filters = getFilterMap(
+                    binding.sortByContainer.checkedChipId,
+                    binding.genreContainer.checkedChipIds
+                ),
+                query = DEFAULT_QUERY
+            )
         )
     }
 
@@ -69,7 +77,7 @@ class ExploreFiltersFragment : BottomSheetDialogFragment() {
 
     @Suppress("UNCHECKED_CAST")
     private fun checkSelectedGenres() {
-        viewModel.filters.value?.get(FilterKeys.WITH_GENRES)?.let { map ->
+        viewModel.state.value.filters?.get(FilterKeys.WITH_GENRES)?.let { map ->
             (map as List<Int>).forEach { id ->
                 binding.genreContainer.check(id)
             }
@@ -77,9 +85,10 @@ class ExploreFiltersFragment : BottomSheetDialogFragment() {
     }
 
     private fun checkSelectedSortOption() {
-        viewModel.filters.value?.get(FilterKeys.SORT_BY).let { id ->
-            binding.sortByContainer.check(id as Int)
-        }
+        val validId = viewModel.state.value.filters?.get(FilterKeys.SORT_BY)?.let { id ->
+            if (id as Int == -1) 0 else id
+        } ?: 0
+        binding.sortByContainer.check(validId)
     }
 
     private fun setupGenres(genres: List<Genre>) {

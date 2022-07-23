@@ -6,12 +6,11 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/show_image"
-        android:layout_width="0dp"
-        android:layout_height="150dp"
+        android:layout_width="104dp"
+        android:layout_height="156dp"
         android:adjustViewBounds="true"
         android:contentDescription="@string/app_name"
         android:scaleType="centerCrop"
-        app:layout_constraintDimensionRatio="w,2:3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize8dp" />
