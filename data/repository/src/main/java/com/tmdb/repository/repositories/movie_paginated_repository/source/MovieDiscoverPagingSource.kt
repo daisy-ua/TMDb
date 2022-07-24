@@ -22,11 +22,19 @@ class MovieDiscoverPagingSource(
             val nextPageNumber = params.key ?: 1
             val response = apiService.discoverMovies(nextPageNumber, options)
 
-            LoadResult.Page(
-                data = response.movies.map { it.toDomain() },
-                prevKey = if (nextPageNumber == 1) null else nextPageNumber - 1,
-                nextKey = nextPageNumber + 1
-            )
+            if (response.movies.isEmpty()) {
+                LoadResult.Page(
+                    data = response.movies.map { it.toDomain() },
+                    prevKey = null,
+                    nextKey = null
+                )
+            } else {
+                LoadResult.Page(
+                    data = response.movies.map { it.toDomain() },
+                    prevKey = if (nextPageNumber == 1) null else nextPageNumber - 1,
+                    nextKey = nextPageNumber + 1
+                )
+            }
         } catch (e: Exception) {
             LoadResult.Error(e)
         }
