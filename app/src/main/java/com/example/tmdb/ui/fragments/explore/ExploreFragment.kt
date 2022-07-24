@@ -40,12 +40,6 @@ class ExploreFragment : Fragment(), Interaction {
 
     private val viewModel: ExploreViewModel by viewModels()
 
-    private val adapter = MoviePagingAdapter(this)
-
-    private val pagingAdapter = adapter.withLoadStateFooter(
-        footer = PagingLoadStateAdapter(adapter::retry)
-    )
-
     private val filtersDialog: ExploreFiltersFragment by lazy {
         ExploreFiltersFragment()
     }
@@ -57,8 +51,6 @@ class ExploreFragment : Fragment(), Interaction {
     ): View {
         binding = FragmentExploreBinding.inflate(inflater, container, false)
 
-        setupListView()
-
         binding.bindState(
             uiState = viewModel.state,
             pagingData = viewModel.pagingDataFlow,
@@ -66,27 +58,6 @@ class ExploreFragment : Fragment(), Interaction {
         )
 
         return binding.root
-    }
-
-    private fun setupListView() {
-        val itemDecoration =
-            GridItemDecorator(3, resources.getDimension(R.dimen.rv_item_margin_small))
-
-        try {
-            setupRecyclerView(
-                binding.searchResult.rv,
-                context,
-                pagingAdapter,
-                GridLayoutManager(
-                    context,
-                    3
-                ),
-                false,
-                itemDecoration = itemDecoration
-            )
-        } catch (ex: Exception) {
-            Log.d("daisy", ex.message.toString())
-        }
     }
 
     override fun onStop() {
@@ -110,6 +81,7 @@ class ExploreFragment : Fragment(), Interaction {
         )
 
         bindRecyclerView(
+            adapter = MoviePagingAdapter(this@ExploreFragment),
             uiState = uiState,
             pagingData = pagingData,
             onScrollChanged = uiActions
@@ -120,6 +92,8 @@ class ExploreFragment : Fragment(), Interaction {
         uiState: StateFlow<UiState>,
         onQueryChanged: (UiAction) -> Unit,
     ) {
+        searchBar.setQuery(uiState.value.query, false)
+
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
 
@@ -135,13 +109,29 @@ class ExploreFragment : Fragment(), Interaction {
                 return false
             }
         })
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            uiState
+                .map { it.query }
+                .distinctUntilChanged()
+                .collect { query ->
+                    filtersBtn.isVisible = query.isEmpty()
+                }
+        }
     }
 
     private fun FragmentExploreBinding.bindRecyclerView(
+        adapter: MoviePagingAdapter,
         uiState: StateFlow<UiState>,
         pagingData: Flow<PagingData<Movie>>,
         onScrollChanged: (UiAction) -> Unit,
     ) {
+        setupListView(
+            pagingAdapter = adapter.withLoadStateFooter(
+                footer = PagingLoadStateAdapter(adapter::retry)
+            )
+        )
+
         searchResult.rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy != 0) onScrollChanged(UiAction.Scroll(currentQuery = uiState.value.query))
@@ -184,9 +174,31 @@ class ExploreFragment : Fragment(), Interaction {
         }
     }
 
+    private fun setupListView(pagingAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
+        val itemDecoration =
+            GridItemDecorator(3, resources.getDimension(R.dimen.rv_item_margin_small))
+
+        try {
+            setupRecyclerView(
+                binding.searchResult.rv,
+                context,
+                pagingAdapter,
+                GridLayoutManager(
+                    context,
+                    3
+                ),
+                false,
+                itemDecoration = itemDecoration
+            )
+        } catch (ex: Exception) {
+            Log.d("daisy", ex.message.toString())
+        }
+    }
+
     private fun loadState(loadState: CombinedLoadStates) {
         binding.notFoundMsg.isVisible =
-            loadState.refresh is LoadState.NotLoading && adapter.itemCount < 1
+            (loadState.refresh is LoadState.NotLoading
+                    && (binding.searchResult.rv.adapter?.itemCount ?: 0) < 1)
 
         binding.searchResult.rv.isVisible =
             loadState.source.refresh is LoadState.NotLoading
