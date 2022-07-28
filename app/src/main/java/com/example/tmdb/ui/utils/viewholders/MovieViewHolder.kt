@@ -12,6 +12,6 @@ class MovieViewHolder(
         showTitle.text = movie.title
         showVoteAverage.text = movie.voteAverage.toString()
 
-        movie.posterPath?.let { ImageManager.getImage(showImage, it) }
+        ImageManager.getImage(showImage, movie.posterPath)
     }
 }

@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.18541666666666667" />
+        <entry key="app/src/main/res/drawable/card_not_available_poster.xml" value="0.125" />
         <entry key="app/src/main/res/drawable/container_gradient.xml" value="0.2140625" />
         <entry key="app/src/main/res/drawable/container_oval.xml" value="0.19" />
         <entry key="app/src/main/res/drawable/container_rate.xml" value="0.371875" />
@@ -15,8 +16,12 @@
         <entry key="app/src/main/res/drawable/ic_back.xml" value="0.19" />
         <entry key="app/src/main/res/drawable/ic_baseline_filter_list.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_filter_list.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_image.xml" value="0.2145" />
+        <entry key="app/src/main/res/drawable/ic_image_not_supported.xml" value="0.2145" />
         <entry key="app/src/main/res/drawable/ic_save_filled.xml" value="0.19" />
         <entry key="app/src/main/res/drawable/ic_save_stroked.xml" value="0.19" />
+        <entry key="app/src/main/res/drawable/ic_search.xml" value="0.2145" />
+        <entry key="app/src/main/res/drawable/image.xml" value="0.2145" />
         <entry key="app/src/main/res/drawable/separator_dot.xml" value="0.19" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.18177083333333333" />
         <entry key="app/src/main/res/layout/container_image_view.xml" value="0.15208333333333332" />
@@ -39,7 +44,10 @@
         <entry key="app/src/main/res/layout/fragment_search_result.xml" value="0.24818840579710144" />
         <entry key="app/src/main/res/layout/item_network_state.xml" value="0.18177083333333333" />
         <entry key="app/src/main/res/menu/main_nav_bottom.xml" value="0.190625" />
+        <entry key="data/network/src/main/res/drawable/ic_browser.xml" value="0.2145" />
+        <entry key="data/network/src/main/res/drawable/ic_cat.xml" value="0.2145" />
         <entry key="data/network/src/main/res/drawable/ic_image.xml" value="0.19" />
+        <entry key="data/network/src/main/res/drawable/ic_not_found.xml" value="0.2145" />
       </map>
     </option>
   </component>

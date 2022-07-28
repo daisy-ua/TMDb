@@ -12,4 +12,10 @@
     <color name="sunglow">#FFCA28</color>
     <color name="paris_daisy">#FFF176</color>
     <color name="gull_gray">#90A4AE</color>
+<!--    -->
+    <color name="cultured">#F1EDEE</color>
+    <color name="light_slate_grey">#6F8695</color>
+    <color name="nyanza">#E1F4CB</color>
+    <color name="space_cadet">#2D3047</color>
+    <color name="burnt_sienna">#EE6C4D</color>
 </resources>
