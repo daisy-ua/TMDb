@@ -1,9 +1,6 @@
 package com.tmdb.repository.mappers
 
-import com.tmdb.models.Country
-import com.tmdb.models.Genre
-import com.tmdb.models.ProductionStatus
-import com.tmdb.models.SpokenLanguage
+import com.tmdb.models.*
 import com.tmdb.models.movies.Movie
 import com.tmdb.models.movies.MovieDetails
 import com.tmdb.models.movies.MoviePaginated
@@ -14,6 +11,8 @@ import com.tmdb.network.models.genre.GenreListDto
 import com.tmdb.network.models.movie.MovieDetailsDto
 import com.tmdb.network.models.movie.MovieDto
 import com.tmdb.network.models.movie.MoviePaginatedDto
+import com.tmdb.network.models.video.VideoDto
+import com.tmdb.network.models.video.VideoListDto
 
 internal fun MovieDto.toDomain(): Movie {
     return Movie(
@@ -77,3 +76,7 @@ internal fun GenreListDto.toDomain() = genres.map { dto -> dto.toDomain() }
 internal fun CountryDto.toDomain() = Country(code, name)
 
 internal fun SpokenLanguageDto.toDomain() = SpokenLanguage(code, name)
+
+internal fun VideoDto.toDomain() = Video(name, key, site, type, official, id)
+
+internal fun VideoListDto.toDomain() = videos.map { dto -> dto.toDomain() }

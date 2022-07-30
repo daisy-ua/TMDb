@@ -1,20 +1,18 @@
 package com.tmdb.repository.repositories.movie_details_repository
 
 import com.tmdb.cache.dao.movies.MovieDetailsDao
+import com.tmdb.models.Video
 import com.tmdb.models.movies.MovieDetails
 import com.tmdb.network.services.movies.MovieDetailsService
 import com.tmdb.repository.mappers.toDomain
-import com.tmdb.repository.mappers.toEntity
 import com.tmdb.repository.utils.Response
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class MovieDetailsRepositoryImpl @Inject constructor(
     private val localDataSource: MovieDetailsDao,
-    private val remoteDatasource: MovieDetailsService
+    private val remoteDatasource: MovieDetailsService,
 ) : MovieDetailsRepository {
 
     override suspend fun fetchMovieDetails(movieId: Int): Flow<Response<MovieDetails>?> {
@@ -39,6 +37,23 @@ class MovieDetailsRepositoryImpl @Inject constructor(
 //                Response.Loading(it.toDomain())
 //            })
 
+        }.flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun fetchMovieVideos(movieId: Int): Flow<Response<List<Video>>> {
+        return flow<Response<List<Video>>> {
+            emit(Response.Loading(null))
+
+            val flow = try {
+                val fetchResponse = flow { emit(remoteDatasource.getMovieVideos(movieId)) }
+
+                fetchResponse.map { Response.Success(it.toDomain()) }
+
+            } catch (throwable: Throwable) {
+                flow { emit(Response.Error(throwable)) }
+            }
+
+            emitAll(flow)
         }.flowOn(Dispatchers.IO)
     }
 }

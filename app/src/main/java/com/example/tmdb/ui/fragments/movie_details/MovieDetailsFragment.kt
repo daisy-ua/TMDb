@@ -7,9 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import com.example.tmdb.R
+import com.example.tmdb.constants.AppConstants.YT_SITE_NAME
 import com.example.tmdb.databinding.ElementImageRoundedBinding
 import com.example.tmdb.databinding.FragmentMovieDetailsBinding
 import com.example.tmdb.ui.components.buildTagTextView
@@ -17,11 +21,19 @@ import com.example.tmdb.utils.ImageManager
 import com.example.tmdb.utils.converters.getCountriesString
 import com.example.tmdb.utils.converters.getDuration
 import com.example.tmdb.utils.converters.getYear
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerCallback
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.YouTubePlayerTracker
 import com.tmdb.models.Country
 import com.tmdb.models.Genre
+import com.tmdb.models.Video
 import com.tmdb.models.movies.MovieDetails
 import com.tmdb.repository.utils.Response
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class MovieDetailsFragment : Fragment() {
@@ -32,9 +44,16 @@ class MovieDetailsFragment : Fragment() {
 
     private val viewModel: MovieDetailsViewModel by viewModels()
 
+    private var ytTracker: YouTubePlayerTracker = YouTubePlayerTracker()
+
+    private var playWhenReady = false
+    private var playbackPosition = 0f
+    private var videoKey: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.fetchMovieDetails(args.movieId.toInt())
+        viewModel.fetchMovieVideos(args.movieId.toInt())
     }
 
     override fun onCreateView(
@@ -46,6 +65,16 @@ class MovieDetailsFragment : Fragment() {
         imageBinding = ElementImageRoundedBinding.bind(binding.root)
         setupListeners()
         return binding.root
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        playbackPosition =
+            if (ytTracker.state == PlayerConstants.PlayerState.ENDED) 0f
+            else ytTracker.currentSecond
+
+        playWhenReady = ytTracker.state == PlayerConstants.PlayerState.PLAYING
     }
 
     private fun setupListeners() {
@@ -62,6 +91,43 @@ class MovieDetailsFragment : Fragment() {
                 }
             }
         })
+
+        viewLifecycleOwner.lifecycle.addObserver(binding.trailerView)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                launch {
+                    viewModel.videos.collect { uiState ->
+                        when (uiState) {
+                            is Response.Success -> showMovieVideos(uiState.data!!)
+
+                            is Response.Error -> Log.d("daisy", "error")
+
+                            else -> {}
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showMovieVideos(videos: List<Video>) {
+        videos.filter { it.site == YT_SITE_NAME }.also { ytVideos ->
+            videoKey = ytVideos[0].key
+
+            binding.trailerView.getYouTubePlayerWhenReady(object : YouTubePlayerCallback {
+                override fun onYouTubePlayer(youTubePlayer: YouTubePlayer) {
+                    youTubePlayer.addListener(ytTracker)
+
+                    if (playWhenReady) {
+                        youTubePlayer.loadVideo(videoKey!!, playbackPosition)
+                    } else {
+                        youTubePlayer.cueVideo(videoKey!!, playbackPosition)
+                    }
+                }
+            })
+        }
     }
 
     private fun showContent(movie: MovieDetails) {
