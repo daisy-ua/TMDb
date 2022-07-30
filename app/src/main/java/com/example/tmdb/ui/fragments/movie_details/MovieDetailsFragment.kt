@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
@@ -78,24 +77,22 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun setupListeners() {
-        viewModel.movieDetails.observe(viewLifecycleOwner, Observer { response ->
-            when (response) {
-                is Response.Success -> showContent(response.data!!)
-
-                is Response.Error -> {
-                    Log.d("daisy", "error")
-                }
-
-                is Response.Loading -> {
-                    Log.d("daisy", "loading")
-                }
-            }
-        })
-
         viewLifecycleOwner.lifecycle.addObserver(binding.trailerView)
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                launch {
+                    viewModel.movieDetails.collect { uiState ->
+                        when (uiState) {
+                            is Response.Success -> showContent(uiState.data!!)
+
+                            is Response.Error -> Log.d("daisy", "error details")
+
+                            else -> {}
+                        }
+                    }
+                }
 
                 launch {
                     viewModel.videos.collect { uiState ->

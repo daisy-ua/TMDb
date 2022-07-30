@@ -16,27 +16,20 @@ class MovieDetailsRepositoryImpl @Inject constructor(
 ) : MovieDetailsRepository {
 
     override suspend fun fetchMovieDetails(movieId: Int): Flow<Response<MovieDetails>?> {
-        return flow {
-//            val cacheResponseEntity = localDataSource.getMovieDetails(movieId)
+        return flow<Response<MovieDetails>?> {
+            emit(Response.Loading(null))
 
-//            val cacheResponse = cacheResponseEntity?.toDomain()
+            val flow = try {
+                val networkResponse = remoteDatasource.getMovieDetails(movieId)
 
-//            emit(Response.Loading(cacheResponse))
+                flow { emit(networkResponse) }
+                    .map { Response.Success(it.toDomain()) }
 
-            val fetchResponse = remoteDatasource.getMovieDetails(movieId)
+            } catch (throwable: Throwable) {
+                flow { emit(Response.Error(throwable)) }
+            }
 
-//            fetchResponse.let {
-//                localDataSource.saveMovieDetails(it.toEntity())
-//                emit(Response.Success(it.toDomain()))
-//            }
-
-            emit(fetchResponse.let {
-                Response.Success(it.toDomain())
-            })
-//            emit(fetchResponse.let {
-//                Response.Loading(it.toDomain())
-//            })
-
+            emitAll(flow)
         }.flowOn(Dispatchers.IO)
     }
 
@@ -45,9 +38,10 @@ class MovieDetailsRepositoryImpl @Inject constructor(
             emit(Response.Loading(null))
 
             val flow = try {
-                val fetchResponse = flow { emit(remoteDatasource.getMovieVideos(movieId)) }
+                val networkResponse = remoteDatasource.getMovieVideos(movieId)
 
-                fetchResponse.map { Response.Success(it.toDomain()) }
+                flow { emit(networkResponse) }
+                    .map { Response.Success(it.toDomain()) }
 
             } catch (throwable: Throwable) {
                 flow { emit(Response.Error(throwable)) }

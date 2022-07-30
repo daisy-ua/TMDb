@@ -1,7 +1,5 @@
 package com.example.tmdb.ui.fragments.movie_details
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tmdb.models.Video
@@ -19,15 +17,15 @@ import javax.inject.Inject
 class MovieDetailsViewModel @Inject constructor(
     private val movieDetailsRepository: MovieDetailsRepository,
 ) : ViewModel() {
-    private val _movieDetails = MutableLiveData<Response<MovieDetails>?>()
-    val movieDetails: LiveData<Response<MovieDetails>?> get() = _movieDetails
+    private val _movieDetails = MutableStateFlow<Response<MovieDetails>?>(Response.Loading())
+    val movieDetails: StateFlow<Response<MovieDetails>?> get() = _movieDetails
 
     private val _videos = MutableStateFlow<Response<List<Video>>>(Response.Loading())
     val videos: StateFlow<Response<List<Video>>> = _videos
 
     fun fetchMovieDetails(movieId: Int) = viewModelScope.launch {
         movieDetailsRepository.fetchMovieDetails(movieId).collect { response ->
-            _movieDetails.postValue(response)
+            _movieDetails.value = response
         }
     }
 
