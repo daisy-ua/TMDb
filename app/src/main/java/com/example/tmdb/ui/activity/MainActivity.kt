@@ -1,6 +1,7 @@
 package com.example.tmdb.ui.activity
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.Navigation.findNavController
@@ -27,4 +28,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupBottomNavigationView() =
         binding.bottomNavigationView.setupWithNavController(navController)
+
+    fun showBottomNavigationView() {
+        binding.bottomNavigationView.visibility = View.VISIBLE
+    }
+
+    fun hideBottomNavigationView() {
+        binding.bottomNavigationView.visibility = View.GONE
+    }
 }

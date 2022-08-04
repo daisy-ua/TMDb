@@ -1,5 +1,6 @@
 package com.example.tmdb.ui.fragments.movie_details
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.tmdb.R
 import com.example.tmdb.constants.AppConstants.YT_SITE_NAME
 import com.example.tmdb.databinding.FragmentMovieDetailsBinding
+import com.example.tmdb.ui.activity.MainActivity
 import com.example.tmdb.ui.components.buildTagTextView
 import com.example.tmdb.utils.ImageManager
 import com.example.tmdb.utils.converters.getDuration
@@ -60,6 +62,16 @@ class MovieDetailsFragment : Fragment() {
         binding = FragmentMovieDetailsBinding.inflate(inflater, container, false)
         setupListeners()
         return binding.root
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity() as MainActivity).hideBottomNavigationView()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        (requireActivity() as MainActivity).showBottomNavigationView()
     }
 
     override fun onPause() {
