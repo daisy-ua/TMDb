@@ -12,7 +12,7 @@ fun buildTagTextView(context: Context, name: String) = TextView(context).apply {
     text = name
     setTextSize(TypedValue.COMPLEX_UNIT_SP, 14F)
     setTextColor(ContextCompat.getColor(context, R.color.gull_gray))
-    background = ContextCompat.getDrawable(context, R.drawable.container_oval)
+    background = ContextCompat.getDrawable(context, R.drawable.background_search_view)
     layoutParams = getParams()
     setPadding(32, 12, 32, 12)
 }

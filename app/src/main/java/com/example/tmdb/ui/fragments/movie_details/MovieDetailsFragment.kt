@@ -13,11 +13,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import com.example.tmdb.R
 import com.example.tmdb.constants.AppConstants.YT_SITE_NAME
-import com.example.tmdb.databinding.ElementImageRoundedBinding
 import com.example.tmdb.databinding.FragmentMovieDetailsBinding
 import com.example.tmdb.ui.components.buildTagTextView
 import com.example.tmdb.utils.ImageManager
-import com.example.tmdb.utils.converters.getCountriesString
 import com.example.tmdb.utils.converters.getDuration
 import com.example.tmdb.utils.converters.getYear
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
@@ -39,7 +37,6 @@ class MovieDetailsFragment : Fragment() {
     private val args: MovieDetailsFragmentArgs by navArgs()
 
     private lateinit var binding: FragmentMovieDetailsBinding
-    private lateinit var imageBinding: ElementImageRoundedBinding
 
     private val viewModel: MovieDetailsViewModel by viewModels()
 
@@ -61,7 +58,6 @@ class MovieDetailsFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentMovieDetailsBinding.inflate(inflater, container, false)
-        imageBinding = ElementImageRoundedBinding.bind(binding.root)
         setupListeners()
         return binding.root
     }
@@ -77,7 +73,7 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun setupListeners() {
-        viewLifecycleOwner.lifecycle.addObserver(binding.trailerView)
+        viewLifecycleOwner.lifecycle.addObserver(binding.scrollContent.trailerView)
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -113,7 +109,8 @@ class MovieDetailsFragment : Fragment() {
         videos.filter { it.site == YT_SITE_NAME }.also { ytVideos ->
             videoKey = ytVideos[0].key
 
-            binding.trailerView.getYouTubePlayerWhenReady(object : YouTubePlayerCallback {
+            binding.scrollContent.trailerView.getYouTubePlayerWhenReady(object :
+                YouTubePlayerCallback {
                 override fun onYouTubePlayer(youTubePlayer: YouTubePlayer) {
                     youTubePlayer.addListener(ytTracker)
 
@@ -136,20 +133,20 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun setupBasicMovieInfo(movie: MovieDetails) {
-        binding.enTitle.text = movie.title
+        binding.scrollContent.enTitle.text = movie.title
 
-        binding.description.text = movie.overview
+        binding.scrollContent.description.text = movie.overview
     }
 
     private fun setupPosters(movie: MovieDetails) {
         movie.posterPath?.let {
             ImageManager.getBlurredImage(binding.imageBackground.imageBackground, it)
-            ImageManager.getImage(imageBinding.image, it)
+            ImageManager.getImage(binding.scrollContent.posterContainer, it)
         }
     }
 
     private fun setupTags(movie: MovieDetails) {
-        with(binding) {
+        with(binding.scrollContent) {
             mainTags.tag1.icon.setImageResource(R.drawable.ic_calendar)
             mainTags.tag1.name.setText(R.string.year)
             mainTags.tag1.value.text = getYear(movie.releaseDate).toString()
@@ -160,21 +157,24 @@ class MovieDetailsFragment : Fragment() {
                 getDuration(formattedDuration)
             } ?: this@MovieDetailsFragment.resources.getString(R.string.none_info)
 
-            mainTags.tag3.icon.setImageResource(R.drawable.ic_rating)
+            mainTags.tag3.icon.setImageResource(R.drawable.ic_star_24)
             mainTags.tag3.name.setText(R.string.rating)
-            mainTags.tag3.value.text = movie.voteAverage.toString()
+            mainTags.tag3.value.text = String.format("%.1f", movie.voteAverage)
         }
     }
 
     private fun setupGenres(genres: List<Genre>) {
-        for (genre in genres) {
-            this@MovieDetailsFragment.context?.let { context ->
-                binding.genreContainer.addView(buildTagTextView(context, genre.name))
+        binding.scrollContent.genreContainer.let { container ->
+            container.removeAllViews()
+            for (genre in genres) {
+                container.addView(buildTagTextView(requireContext(), genre.name))
             }
         }
+
     }
 
     private fun setupCountries(countries: List<Country>) {
-        binding.countries.text = getCountriesString(countries)
+        binding.scrollContent.countries.text =
+            countries.joinToString { country -> country.name }
     }
 }

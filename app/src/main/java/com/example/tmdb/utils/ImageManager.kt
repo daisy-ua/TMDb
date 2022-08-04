@@ -23,7 +23,7 @@ object ImageManager {
     fun getBlurredImage(view: AppCompatImageView, url: String?) {
         Glide.with(view.context)
             .load(BASE_URL + url)
-            .apply(bitmapTransform(BlurTransformation(5, 3)))
+            .apply(bitmapTransform(BlurTransformation(8, 8)))
             .into(view)
     }
 }

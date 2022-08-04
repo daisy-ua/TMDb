@@ -18,4 +18,10 @@
     <color name="nyanza">#E1F4CB</color>
     <color name="space_cadet">#2D3047</color>
     <color name="burnt_sienna">#EE6C4D</color>
+
+    <color name="oxford_blue">#0A2342</color>
+    <color name="black_pearl">#081C35</color>
+    <color name="tropical_blue_50">#50C9DDF8</color>
+    <color name="polar_80">#80ebf5fb</color>
+    <color name="silver_50">#50CDCCCC</color>
 </resources>
