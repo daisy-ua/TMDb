@@ -2,10 +2,11 @@ package com.example.tmdb.ui.fragments.movie_details
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -95,9 +96,9 @@ class MovieDetailsFragment : Fragment() {
                         when (uiState) {
                             is Response.Success -> showContent(uiState.data!!)
 
-                            is Response.Error -> Log.d("daisy", "error details")
+                            is Response.Error -> showError(uiState.throwable?.message.toString())
 
-                            else -> {}
+                            else -> showLoading()
                         }
                     }
                 }
@@ -107,7 +108,7 @@ class MovieDetailsFragment : Fragment() {
                         when (uiState) {
                             is Response.Success -> showMovieVideos(uiState.data!!)
 
-                            is Response.Error -> Log.d("daisy", "error")
+                            is Response.Error -> {}
 
                             else -> {}
                         }
@@ -117,22 +118,34 @@ class MovieDetailsFragment : Fragment() {
         }
     }
 
+    private fun showLoading() {
+        binding.progressBar.isVisible = true
+        binding.scrollContent.root.isVisible = false
+    }
+
+    private fun showError(message: String) {
+        binding.progressBar.isVisible = false
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
     private fun showMovieVideos(videos: List<Video>) {
         videos.filter { it.site == YT_SITE_NAME }.also { ytVideos ->
-            videoKey = ytVideos[0].key
+            if (ytVideos.isNotEmpty()) {
+                videoKey = ytVideos[0].key
 
-            binding.scrollContent.trailerView.getYouTubePlayerWhenReady(object :
-                YouTubePlayerCallback {
-                override fun onYouTubePlayer(youTubePlayer: YouTubePlayer) {
-                    youTubePlayer.addListener(ytTracker)
+                binding.scrollContent.trailerView.getYouTubePlayerWhenReady(object :
+                    YouTubePlayerCallback {
+                    override fun onYouTubePlayer(youTubePlayer: YouTubePlayer) {
+                        youTubePlayer.addListener(ytTracker)
 
-                    if (playWhenReady) {
-                        youTubePlayer.loadVideo(videoKey!!, playbackPosition)
-                    } else {
-                        youTubePlayer.cueVideo(videoKey!!, playbackPosition)
+                        if (playWhenReady) {
+                            youTubePlayer.loadVideo(videoKey!!, playbackPosition)
+                        } else {
+                            youTubePlayer.cueVideo(videoKey!!, playbackPosition)
+                        }
                     }
-                }
-            })
+                })
+            }
         }
     }
 
@@ -142,6 +155,9 @@ class MovieDetailsFragment : Fragment() {
         setupTags(movie)
         setupGenres(movie.genres)
         setupCountries(movie.productionCountries)
+
+        binding.progressBar.isVisible = false
+        binding.scrollContent.root.isVisible = true
     }
 
     private fun setupBasicMovieInfo(movie: MovieDetails) {
@@ -151,7 +167,7 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun setupPosters(movie: MovieDetails) {
-        movie.posterPath?.let {
+        movie.posterPath.let {
             ImageManager.getBlurredImage(binding.imageBackground.imageBackground, it)
             ImageManager.getImage(binding.scrollContent.posterContainer, it)
         }
