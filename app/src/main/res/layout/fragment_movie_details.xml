@@ -21,6 +21,7 @@
         app:elevation="0dp">
 
         <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@null"
@@ -34,7 +35,7 @@
         layout="@layout/content_movie_details_scrollable" />
 
     <ProgressBar
-        android:id="@+id/progress_bar"
+        android:id="@+id/main_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

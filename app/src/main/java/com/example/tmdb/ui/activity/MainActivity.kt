@@ -3,6 +3,7 @@ package com.example.tmdb.ui.activity
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -36,4 +37,7 @@ class MainActivity : AppCompatActivity() {
     fun hideBottomNavigationView() {
         binding.bottomNavigationView.visibility = View.GONE
     }
+
+    val isBottomNavigationViewVisible
+        get() = binding.bottomNavigationView.isVisible
 }

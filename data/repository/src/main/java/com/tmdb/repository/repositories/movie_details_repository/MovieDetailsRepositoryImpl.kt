@@ -3,6 +3,7 @@ package com.tmdb.repository.repositories.movie_details_repository
 import com.tmdb.cache.dao.movies.MovieDetailsDao
 import com.tmdb.models.Video
 import com.tmdb.models.movies.MovieDetails
+import com.tmdb.models.movies.MoviePaginated
 import com.tmdb.network.services.movies.MovieDetailsService
 import com.tmdb.repository.mappers.toDomain
 import com.tmdb.repository.utils.Response
@@ -39,6 +40,24 @@ class MovieDetailsRepositoryImpl @Inject constructor(
 
             val flow = try {
                 val networkResponse = remoteDatasource.getMovieVideos(movieId)
+
+                flow { emit(networkResponse) }
+                    .map { Response.Success(it.toDomain()) }
+
+            } catch (throwable: Throwable) {
+                flow { emit(Response.Error(throwable)) }
+            }
+
+            emitAll(flow)
+        }.flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun fetchMovieRecommendation(movieId: Int): Flow<Response<MoviePaginated>> {
+        return flow<Response<MoviePaginated>> {
+            emit(Response.Loading(null))
+
+            val flow = try {
+                val networkResponse = remoteDatasource.getMovieRecommendations(movieId)
 
                 flow { emit(networkResponse) }
                     .map { Response.Success(it.toDomain()) }

@@ -30,6 +30,9 @@
         android:name="com.example.tmdb.ui.fragments.movie_details.MovieDetailsFragment"
         android:label="@string/details_name"
         tools:layout="@layout/fragment_movie_details">
+        <action
+            android:id="@+id/get_movie_details_action"
+            app:destination="@id/movie_details_fragment" />
         <argument
             android:name="movie_id"
             app:argType="long" />

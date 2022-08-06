@@ -1,6 +1,5 @@
 package com.example.tmdb.ui.fragments.movie_details
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,12 +11,18 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.RecyclerView
 import com.example.tmdb.R
 import com.example.tmdb.constants.AppConstants.YT_SITE_NAME
 import com.example.tmdb.databinding.FragmentMovieDetailsBinding
 import com.example.tmdb.ui.activity.MainActivity
 import com.example.tmdb.ui.components.buildTagTextView
+import com.example.tmdb.ui.components.recyclerview.setupRecyclerView
+import com.example.tmdb.ui.utils.adapters.MovieAdapter
+import com.example.tmdb.ui.utils.interactions.Interaction
+import com.example.tmdb.ui.utils.rvdecorators.LinearItemDecoration
 import com.example.tmdb.utils.ImageManager
 import com.example.tmdb.utils.converters.getDuration
 import com.example.tmdb.utils.converters.getYear
@@ -28,6 +33,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.YouTube
 import com.tmdb.models.Country
 import com.tmdb.models.Genre
 import com.tmdb.models.Video
+import com.tmdb.models.movies.Movie
 import com.tmdb.models.movies.MovieDetails
 import com.tmdb.repository.utils.Response
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,7 +42,7 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class MovieDetailsFragment : Fragment() {
+class MovieDetailsFragment : Fragment(), Interaction {
     private val args: MovieDetailsFragmentArgs by navArgs()
 
     private lateinit var binding: FragmentMovieDetailsBinding
@@ -49,10 +55,13 @@ class MovieDetailsFragment : Fragment() {
     private var playbackPosition = 0f
     private var videoKey: String? = null
 
+    private lateinit var movieRecommendationAdapter: MovieAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.fetchMovieDetails(args.movieId.toInt())
         viewModel.fetchMovieVideos(args.movieId.toInt())
+        viewModel.fetchMovieRecommendations(args.movieId.toInt())
     }
 
     override fun onCreateView(
@@ -61,13 +70,18 @@ class MovieDetailsFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentMovieDetailsBinding.inflate(inflater, container, false)
+        setupRecyclerView(binding.scrollContent.recommendedMovies.rv)
         setupListeners()
         return binding.root
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        (requireActivity() as MainActivity).hideBottomNavigationView()
+    override fun onResume() {
+        super.onResume()
+        (requireActivity() as MainActivity).let { mainActivity ->
+            if (mainActivity.isBottomNavigationViewVisible) {
+                mainActivity.hideBottomNavigationView()
+            }
+        }
     }
 
     override fun onDetach() {
@@ -86,6 +100,10 @@ class MovieDetailsFragment : Fragment() {
     }
 
     private fun setupListeners() {
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
+
         viewLifecycleOwner.lifecycle.addObserver(binding.scrollContent.trailerView)
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -114,18 +132,42 @@ class MovieDetailsFragment : Fragment() {
                         }
                     }
                 }
+
+                launch {
+                    viewModel.movieRecommendations.collect { uiState ->
+                        when (uiState) {
+                            is Response.Success -> showMovieRecommendations(uiState.data?.movies)
+
+                            is Response.Error -> hideMovieRecommendations()
+
+                            else -> {}
+                        }
+                    }
+                }
             }
         }
     }
 
     private fun showLoading() {
-        binding.progressBar.isVisible = true
+        binding.mainProgressBar.isVisible = true
         binding.scrollContent.root.isVisible = false
     }
 
     private fun showError(message: String) {
-        binding.progressBar.isVisible = false
+        binding.mainProgressBar.isVisible = false
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showMovieRecommendations(movies: List<Movie>?) {
+        if (movies.isNullOrEmpty()) {
+            hideMovieRecommendations()
+        } else {
+            movieRecommendationAdapter.submitList(movies)
+        }
+    }
+
+    private fun hideMovieRecommendations() {
+        binding.scrollContent.recommendedMoviesName.isVisible = false
     }
 
     private fun showMovieVideos(videos: List<Video>) {
@@ -156,7 +198,7 @@ class MovieDetailsFragment : Fragment() {
         setupGenres(movie.genres)
         setupCountries(movie.productionCountries)
 
-        binding.progressBar.isVisible = false
+        binding.mainProgressBar.isVisible = false
         binding.scrollContent.root.isVisible = true
     }
 
@@ -204,5 +246,25 @@ class MovieDetailsFragment : Fragment() {
     private fun setupCountries(countries: List<Country>) {
         binding.scrollContent.countries.text =
             countries.joinToString { country -> country.name }
+    }
+
+    private fun setupRecyclerView(rv: RecyclerView) {
+        movieRecommendationAdapter = MovieAdapter(this)
+
+        val itemDecoration =
+            LinearItemDecoration(resources.getDimension(R.dimen.rv_item_margin_small))
+
+        setupRecyclerView(
+            rv,
+            context,
+            adapter = movieRecommendationAdapter,
+            hasFixedSize = true,
+            itemDecoration = itemDecoration
+        )
+    }
+
+    override fun onItemClicked(id: Long) {
+        val action = MovieDetailsFragmentDirections.getMovieDetailsAction(id)
+        findNavController().navigate(action)
     }
 }

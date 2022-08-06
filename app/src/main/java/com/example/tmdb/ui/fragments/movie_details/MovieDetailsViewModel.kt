@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tmdb.models.Video
 import com.tmdb.models.movies.MovieDetails
+import com.tmdb.models.movies.MoviePaginated
 import com.tmdb.repository.repositories.movie_details_repository.MovieDetailsRepository
 import com.tmdb.repository.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,12 +21,24 @@ class MovieDetailsViewModel @Inject constructor(
     private val _movieDetails = MutableStateFlow<Response<MovieDetails>?>(Response.Loading())
     val movieDetails: StateFlow<Response<MovieDetails>?> get() = _movieDetails
 
+    private val _movieRecommendations =
+        MutableStateFlow<Response<MoviePaginated>?>(Response.Loading())
+
+    val movieRecommendations: StateFlow<Response<MoviePaginated>?>
+        get() = _movieRecommendations
+
     private val _videos = MutableStateFlow<Response<List<Video>>>(Response.Loading())
     val videos: StateFlow<Response<List<Video>>> = _videos
 
     fun fetchMovieDetails(movieId: Int) = viewModelScope.launch {
         movieDetailsRepository.fetchMovieDetails(movieId).collect { response ->
             _movieDetails.value = response
+        }
+    }
+
+    fun fetchMovieRecommendations(movieId: Int) = viewModelScope.launch {
+        movieDetailsRepository.fetchMovieRecommendation(movieId).collect { response ->
+            _movieRecommendations.value = response
         }
     }
 
