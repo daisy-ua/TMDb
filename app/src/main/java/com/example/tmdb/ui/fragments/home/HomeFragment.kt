@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tmdb.R
+import com.example.tmdb.constants.HomeCategory
 import com.example.tmdb.databinding.FragmentHomeBinding
 import com.example.tmdb.ui.components.recyclerview.setupRecyclerView
 import com.example.tmdb.ui.utils.adapters.MoviePagingAdapter
@@ -69,9 +70,17 @@ class HomeFragment : Fragment(), Interaction {
 
     private fun setupListeners() {
 
-        binding.contentMain.nowPlayingSeeMore.setOnClickListener {}
-        binding.contentMain.trendingSeeMore.setOnClickListener {}
-        binding.contentMain.topRatedSeeMore.setOnClickListener {}
+        binding.contentMain.nowPlayingSeeMore.setOnClickListener {
+            navigateSeeMore(HomeCategory.NOW_PLAYING)
+        }
+
+        binding.contentMain.trendingSeeMore.setOnClickListener {
+            navigateSeeMore(HomeCategory.TRENDING)
+        }
+
+        binding.contentMain.topRatedSeeMore.setOnClickListener {
+            navigateSeeMore(HomeCategory.TOP_RATED)
+        }
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -118,8 +127,9 @@ class HomeFragment : Fragment(), Interaction {
         }
     }
 
-    private fun navigateSeeMore() {
-
+    private fun navigateSeeMore(category: HomeCategory) {
+        val action = HomeFragmentDirections.getSeeMoreAction(category)
+        findNavController().navigate(action)
     }
 
     override fun onItemClicked(id: Long) {

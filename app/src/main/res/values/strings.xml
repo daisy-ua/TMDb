@@ -2,6 +2,7 @@
     <string name="app_name">TMDb</string>
     <string name="home_name">Home</string>
     <string name="explore_name">Explore</string>
+    <string name="see_more_name">See More</string>
     <string name="details_name">Details</string>
     <string name="similar_movies">Similar movies</string>
     <string name="year">year</string>
