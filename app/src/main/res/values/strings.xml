@@ -23,4 +23,6 @@
     <string name="retry">retry</string>
     <string name="no_internet_connection_error">No Internet Connection</string>
     <string name="watch_more">Watch more</string>
+    <string name="see_more">See more</string>
+    <string name="trending">Trending</string>
 </resources>

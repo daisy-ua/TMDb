@@ -6,16 +6,15 @@ import com.tmdb.repository.mappers.toDomain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class MovieSearchPagingSource(
+class MovieTopRatedPagingDataSource(
     private val apiService: MoviePaginatedService,
-    private val query: String,
 ) : BasePagingSource() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         return try {
             val nextPageNumber = params.key ?: 1
 
             withContext(Dispatchers.IO) {
-                val response = apiService.searchMovies(query, nextPageNumber)
+                val response = apiService.getTopRatedMovies(nextPageNumber)
 
                 val nextKey = if (response.movies.isEmpty()) null else nextPageNumber + 1
 

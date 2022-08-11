@@ -43,8 +43,9 @@
         <entry key="app/src/main/res/layout/container_recycler_view.xml" value="0.1828125" />
         <entry key="app/src/main/res/layout/container_show_implicit.xml" value="0.10213143872113677" />
         <entry key="app/src/main/res/layout/container_toolbar.xml" value="0.18177083333333333" />
+        <entry key="app/src/main/res/layout/content_home_scrollable.xml" value="0.35520833333333335" />
         <entry key="app/src/main/res/layout/content_main.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/content_movie_details_scrollable.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/content_movie_details_scrollable.xml" value="0.33" />
         <entry key="app/src/main/res/layout/custom_player_ui.xml" value="0.1" />
         <entry key="app/src/main/res/layout/element_image_background.xml" value="0.19791666666666666" />
         <entry key="app/src/main/res/layout/element_image_rounded.xml" value="0.19791666666666666" />

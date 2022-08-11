@@ -2,14 +2,13 @@ package com.tmdb.network.services.movies
 
 import com.tmdb.network.models.movie.MoviePaginatedDto
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
 interface MoviePaginatedService {
 
-    @GET("movie/popular")
-    suspend fun getPopularMovies(
+    @GET("trending/movie/day")
+    suspend fun getTrendingMovies(
         @Query("page") page: Int,
     ): MoviePaginatedDto
 
@@ -21,11 +20,6 @@ interface MoviePaginatedService {
     @GET("movie/top_rated")
     suspend fun getTopRatedMovies(
         @Query("page") page: Int,
-    ): MoviePaginatedDto
-
-    @GET("movie/{movie_id}/similar")
-    suspend fun getSimilarMovies(
-        @Path("movie_id") id: Int,
     ): MoviePaginatedDto
 
     @GET("search/movie")
