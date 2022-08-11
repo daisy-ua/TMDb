@@ -8,6 +8,7 @@ import com.tmdb.network.services.movies.MoviePaginatedService
 import com.tmdb.repository.repositories.discover_repository.DiscoverRepositoryImpl
 import com.tmdb.repository.repositories.movie_details_repository.MovieDetailsRepositoryImpl
 import com.tmdb.repository.repositories.movie_paginated_repository.MoviePaginatedRepositoryImpl
+import com.tmdb.repository.repositories.moviepaginatedpreview.MoviePaginatedPreviewRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,6 +25,12 @@ object RepositoryImpModule {
         localSource: MovieDao,
         remoteSource: MoviePaginatedService,
     ): MoviePaginatedRepositoryImpl = MoviePaginatedRepositoryImpl(localSource, remoteSource)
+
+    @Provides
+    @Singleton
+    fun provideMoviePaginatedPreviewRepository(
+        remoteSource: MoviePaginatedService,
+    ): MoviePaginatedPreviewRepositoryImpl = MoviePaginatedPreviewRepositoryImpl(remoteSource)
 
     @Provides
     @Singleton

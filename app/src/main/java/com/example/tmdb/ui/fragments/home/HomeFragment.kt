@@ -11,15 +11,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tmdb.R
 import com.example.tmdb.constants.HomeCategory
 import com.example.tmdb.databinding.FragmentHomeBinding
 import com.example.tmdb.ui.components.recyclerview.setupRecyclerView
-import com.example.tmdb.ui.utils.adapters.MoviePagingAdapter
+import com.example.tmdb.ui.utils.adapters.MovieAdapter
 import com.example.tmdb.ui.utils.interactions.Interaction
 import com.example.tmdb.ui.utils.rvdecorators.LinearItemDecoration
+import com.tmdb.repository.utils.Response
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
@@ -32,9 +32,9 @@ class HomeFragment : Fragment(), Interaction {
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: HomeViewModel by viewModels()
 
-    private val nowPlayingShowsAdapter = MoviePagingAdapter(this)
-    private val topRatedShowsAdapter = MoviePagingAdapter(this)
-    private val trendingShowsAdapter = MoviePagingAdapter(this)
+    private val nowPlayingShowsAdapter = MovieAdapter(this)
+    private val topRatedShowsAdapter = MovieAdapter(this)
+    private val trendingShowsAdapter = MovieAdapter(this)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,7 +55,7 @@ class HomeFragment : Fragment(), Interaction {
         setupRecyclerView(binding.contentMain.topRatedShows, topRatedShowsAdapter)
     }
 
-    private fun setupRecyclerView(rv: RecyclerView, adapter: MoviePagingAdapter) {
+    private fun setupRecyclerView(rv: RecyclerView, adapter: MovieAdapter) {
         val itemDecoration =
             LinearItemDecoration(resources.getDimension(R.dimen.rv_item_margin_small))
 
@@ -85,17 +85,17 @@ class HomeFragment : Fragment(), Interaction {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-                val nowPlayingIsNotLoading = nowPlayingShowsAdapter
-                    .loadStateFlow
-                    .map { it.source.refresh is LoadState.NotLoading }
+                val nowPlayingIsNotLoading = viewModel.nowPlayingMovies.map {
+                    it !is Response.Loading
+                }
 
-                val topRatedIsNotLoading = topRatedShowsAdapter
-                    .loadStateFlow
-                    .map { it.source.refresh is LoadState.NotLoading }
+                val topRatedIsNotLoading = viewModel.topRatedMovies.map {
+                    it !is Response.Loading
+                }
 
-                val trendingIsNotLoading = topRatedShowsAdapter
-                    .loadStateFlow
-                    .map { it.source.refresh is LoadState.NotLoading }
+                val trendingIsNotLoading = viewModel.trendingMovies.map {
+                    it !is Response.Loading
+                }
 
                 val shouldHideLoader = combine(
                     nowPlayingIsNotLoading,
@@ -113,15 +113,27 @@ class HomeFragment : Fragment(), Interaction {
                 }
 
                 launch {
-                    viewModel.nowPlayingMovies.collect(nowPlayingShowsAdapter::submitData)
+                    viewModel.nowPlayingMovies.collect { response ->
+                        response.data?.movies?.let {
+                            nowPlayingShowsAdapter.submitList(it)
+                        }
+                    }
                 }
 
                 launch {
-                    viewModel.trendingMovies.collect(trendingShowsAdapter::submitData)
+                    viewModel.trendingMovies.collect { response ->
+                        response.data?.movies?.let {
+                            trendingShowsAdapter.submitList(it)
+                        }
+                    }
                 }
 
                 launch {
-                    viewModel.topRatedMovies.collect(topRatedShowsAdapter::submitData)
+                    viewModel.topRatedMovies.collect { response ->
+                        response.data?.movies?.let {
+                            topRatedShowsAdapter.submitList(it)
+                        }
+                    }
                 }
             }
         }

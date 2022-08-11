@@ -6,6 +6,8 @@ import com.tmdb.repository.repositories.movie_details_repository.MovieDetailsRep
 import com.tmdb.repository.repositories.movie_details_repository.MovieDetailsRepositoryImpl
 import com.tmdb.repository.repositories.movie_paginated_repository.MoviePaginatedRepository
 import com.tmdb.repository.repositories.movie_paginated_repository.MoviePaginatedRepositoryImpl
+import com.tmdb.repository.repositories.moviepaginatedpreview.MoviePaginatedPreviewRepository
+import com.tmdb.repository.repositories.moviepaginatedpreview.MoviePaginatedPreviewRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -18,13 +20,25 @@ abstract class RepositoryModule {
 
     @Binds
     @ViewModelScoped
-    abstract fun bindMoviePaginatedRepository(impl: MoviePaginatedRepositoryImpl): MoviePaginatedRepository
+    abstract fun bindMoviePaginatedRepository(
+        impl: MoviePaginatedRepositoryImpl,
+    ): MoviePaginatedRepository
 
     @Binds
     @ViewModelScoped
-    abstract fun bindMovieDetailsRepository(impl: MovieDetailsRepositoryImpl): MovieDetailsRepository
+    abstract fun bindMoviePaginatedPreviewRepository(
+        impl: MoviePaginatedPreviewRepositoryImpl,
+    ): MoviePaginatedPreviewRepository
 
     @Binds
     @ViewModelScoped
-    abstract fun DiscoverRepository(impl: DiscoverRepositoryImpl): DiscoverRepository
+    abstract fun bindMovieDetailsRepository(
+        impl: MovieDetailsRepositoryImpl,
+    ): MovieDetailsRepository
+
+    @Binds
+    @ViewModelScoped
+    abstract fun DiscoverRepository(
+        impl: DiscoverRepositoryImpl,
+    ): DiscoverRepository
 }

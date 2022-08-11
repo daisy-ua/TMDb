@@ -2,10 +2,9 @@ package com.example.tmdb.ui.fragments.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import com.tmdb.models.movies.Movie
-import com.tmdb.repository.repositories.movie_paginated_repository.MoviePaginatedRepository
+import com.tmdb.models.movies.MoviePaginated
+import com.tmdb.repository.repositories.moviepaginatedpreview.MoviePaginatedPreviewRepository
+import com.tmdb.repository.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,47 +14,42 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val moviePaginatedRepository: MoviePaginatedRepository,
+    private val moviePaginatedPreviewRepository: MoviePaginatedPreviewRepository,
 ) : ViewModel() {
 
-    private val _nowPlayingMovies = MutableStateFlow<PagingData<Movie>>(PagingData.empty())
-    val nowPlayingMovies: StateFlow<PagingData<Movie>> get() = _nowPlayingMovies
+    private val _nowPlayingMovies = MutableStateFlow<Response<MoviePaginated>>(Response.Loading())
+    val nowPlayingMovies: StateFlow<Response<MoviePaginated>> get() = _nowPlayingMovies
 
-    private val _trendingMovies = MutableStateFlow<PagingData<Movie>>(PagingData.empty())
-    val trendingMovies: StateFlow<PagingData<Movie>> get() = _trendingMovies
+    private val _trendingMovies = MutableStateFlow<Response<MoviePaginated>>(Response.Loading())
+    val trendingMovies: StateFlow<Response<MoviePaginated>> get() = _trendingMovies
 
-    private val _topRatedMovies = MutableStateFlow<PagingData<Movie>>(PagingData.empty())
-    val topRatedMovies: StateFlow<PagingData<Movie>> get() = _topRatedMovies
+    private val _topRatedMovies = MutableStateFlow<Response<MoviePaginated>>(Response.Loading())
+    val topRatedMovies: StateFlow<Response<MoviePaginated>> get() = _topRatedMovies
 
     init {
-        viewModelScope.launch {
 
-            launch {
-                fetchNowPlayingMovies().collect { movies ->
-                    _nowPlayingMovies.value = movies
-                }
-            }
+        fetchTrendingMovies()
 
-            launch {
-                fetchTrendingMovies().collect { movies ->
-                    _trendingMovies.value = movies
-                }
-            }
+        fetchNowPlayingMovies()
 
-            launch {
-                fetchTopRatedMovies().collect { movies ->
-                    _topRatedMovies.value = movies
-                }
-            }
+        fetchTopRatedMovies()
+    }
+
+    private fun fetchTrendingMovies() = viewModelScope.launch {
+        moviePaginatedPreviewRepository.fetchTrendingMoviesPreview().collect {
+            _trendingMovies.value = it
         }
     }
 
-    private suspend fun fetchTrendingMovies() = moviePaginatedRepository.fetchTrendingMovies()
-        .cachedIn(viewModelScope)
+    private fun fetchNowPlayingMovies() = viewModelScope.launch {
+        moviePaginatedPreviewRepository.fetchNowPlayingMoviesPreview().collect {
+            _nowPlayingMovies.value = it
+        }
+    }
 
-    private suspend fun fetchNowPlayingMovies() = moviePaginatedRepository.fetchNowPlayingMovies()
-        .cachedIn(viewModelScope)
-
-    private suspend fun fetchTopRatedMovies() = moviePaginatedRepository.fetchTopRatedMovies()
-        .cachedIn(viewModelScope)
+    private fun fetchTopRatedMovies() = viewModelScope.launch {
+        moviePaginatedPreviewRepository.fetchTopRatedMoviesPreview().collect {
+            _topRatedMovies.value = it
+        }
+    }
 }
