@@ -14,10 +14,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="@string/explore_name"
+            android:fontFamily="sans-serif-black"
+            android:text="@string/home_name"
             android:textColor="@color/black_pearl"
-            android:textSize="32sp"
+            android:textSize="22sp"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -27,7 +27,7 @@
             android:layout_marginTop="20dp"
             android:text="@string/now_playing"
             android:textColor="@color/black_pearl"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title" />
@@ -62,7 +62,7 @@
             android:layout_marginTop="20dp"
             android:text="@string/trending"
             android:textColor="@color/black_pearl"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/now_playing_shows"
@@ -98,7 +98,7 @@
             android:layout_marginTop="20dp"
             android:text="@string/top_rated"
             android:textColor="@color/black_pearl"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/trending_shows"
