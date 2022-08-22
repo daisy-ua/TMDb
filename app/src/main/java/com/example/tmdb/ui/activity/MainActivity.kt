@@ -1,7 +1,10 @@
 package com.example.tmdb.ui.activity
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
@@ -18,6 +21,8 @@ class MainActivity : AppCompatActivity() {
         findNavController(this, R.id.nav_host_fragment)
     }
 
+    private var isBackPressedOnce = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ContentMainBinding.inflate(layoutInflater)
@@ -26,6 +31,35 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp() = navController.navigateUp()
+
+    override fun onBackPressed() {
+        when (navController.currentDestination?.id) {
+            R.id.explore_fragment -> onExploreFragmentBackPressed()
+
+            R.id.home_fragment -> onExitBackPressed()
+
+            else -> super.onBackPressed()
+        }
+    }
+
+    private fun onExploreFragmentBackPressed() {
+        binding.bottomNavigationView.selectedItemId = R.id.home_fragment
+    }
+
+    private fun onExitBackPressed() {
+        if (isBackPressedOnce) {
+            super.onBackPressed()
+            return
+        }
+
+        Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show()
+
+        isBackPressedOnce = true
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            isBackPressedOnce = false
+        }, 2000)
+    }
 
     private fun setupBottomNavigationView() =
         binding.bottomNavigationView.setupWithNavController(navController)
