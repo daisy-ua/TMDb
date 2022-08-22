@@ -13,4 +13,3 @@ include ':domain'
 
 include ':data:network'
 include ':data:repository'
-include ':data:cache'

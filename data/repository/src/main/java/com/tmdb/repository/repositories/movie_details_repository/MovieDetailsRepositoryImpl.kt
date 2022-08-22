@@ -1,6 +1,5 @@
 package com.tmdb.repository.repositories.movie_details_repository
 
-import com.tmdb.cache.dao.movies.MovieDetailsDao
 import com.tmdb.models.Video
 import com.tmdb.models.movies.MovieDetails
 import com.tmdb.models.movies.MoviePaginated
@@ -12,7 +11,6 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 class MovieDetailsRepositoryImpl @Inject constructor(
-    private val localDataSource: MovieDetailsDao,
     private val remoteDatasource: MovieDetailsService,
 ) : MovieDetailsRepository {
 
