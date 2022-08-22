@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -40,7 +41,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-
 @AndroidEntryPoint
 class MovieDetailsFragment : Fragment(), Interaction {
     private val args: MovieDetailsFragmentArgs by navArgs()
@@ -62,6 +62,7 @@ class MovieDetailsFragment : Fragment(), Interaction {
         viewModel.fetchMovieDetails(args.movieId.toInt())
         viewModel.fetchMovieVideos(args.movieId.toInt())
         viewModel.fetchMovieRecommendations(args.movieId.toInt())
+        viewModel.isMovieSaved(args.movieId.toInt())
     }
 
     override fun onCreateView(
@@ -100,8 +101,12 @@ class MovieDetailsFragment : Fragment(), Interaction {
     }
 
     private fun setupListeners() {
-        binding.toolbar.setNavigationOnClickListener {
+        binding.backBtn.setOnClickListener {
             findNavController().popBackStack()
+        }
+
+        binding.saveBtn.setOnClickListener {
+            viewModel.updateIsMovieSaved(args.movieId.toInt())
         }
 
         viewLifecycleOwner.lifecycle.addObserver(binding.scrollContent.trailerView)
@@ -142,6 +147,18 @@ class MovieDetailsFragment : Fragment(), Interaction {
 
                             else -> {}
                         }
+                    }
+                }
+
+                launch {
+                    viewModel.isSaved.collect { uiState ->
+                        val iconId = if (uiState is Response.Success && uiState.data == true) {
+                            R.drawable.ic_save_filled
+                        } else {
+                            R.drawable.ic_save_stroked
+                        }
+                        binding.saveBtn.background =
+                            ResourcesCompat.getDrawable(resources, iconId, null)
                     }
                 }
             }
@@ -200,6 +217,7 @@ class MovieDetailsFragment : Fragment(), Interaction {
 
         binding.mainProgressBar.isVisible = false
         binding.scrollContent.root.isVisible = true
+        binding.toolbar.isVisible = true
     }
 
     private fun setupBasicMovieInfo(movie: MovieDetails) {

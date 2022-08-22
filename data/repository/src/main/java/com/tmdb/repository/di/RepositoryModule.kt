@@ -8,6 +8,8 @@ import com.tmdb.repository.repositories.movie_paginated_repository.MoviePaginate
 import com.tmdb.repository.repositories.movie_paginated_repository.MoviePaginatedRepositoryImpl
 import com.tmdb.repository.repositories.moviepaginatedpreview.MoviePaginatedPreviewRepository
 import com.tmdb.repository.repositories.moviepaginatedpreview.MoviePaginatedPreviewRepositoryImpl
+import com.tmdb.repository.repositories.savedrepository.SavedRepository
+import com.tmdb.repository.repositories.savedrepository.SavedRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -41,4 +43,10 @@ abstract class RepositoryModule {
     abstract fun DiscoverRepository(
         impl: DiscoverRepositoryImpl,
     ): DiscoverRepository
+
+    @Binds
+    @ViewModelScoped
+    abstract fun SavedRepository(
+        impl: SavedRepositoryImpl,
+    ): SavedRepository
 }
