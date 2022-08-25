@@ -47,5 +47,6 @@ object RepositoryImpModule {
     @Singleton
     fun provideSavedRepository(
         localDataSource: SavedMoviesDao,
-    ): SavedRepositoryImpl = SavedRepositoryImpl(localDataSource)
+        remoteDataSource: MovieDetailsService
+    ): SavedRepositoryImpl = SavedRepositoryImpl(localDataSource, remoteDataSource)
 }

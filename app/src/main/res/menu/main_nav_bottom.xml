@@ -8,4 +8,8 @@
         android:id="@+id/explore_fragment"
         android:icon="@drawable/ic_baseline_explore"
         android:title="@string/explore_name" />
+    <item
+        android:id="@+id/saved_fragment"
+        android:icon="@drawable/ic_ribbon_fill"
+        android:title="@string/saved_name" />
 </menu>

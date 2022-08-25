@@ -1,36 +1,25 @@
 package com.tmdb.repository.repositories.savedrepository
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.tmdb.cache.dao.SavedMoviesDao
 import com.tmdb.cache.entities.MovieEntity
+import com.tmdb.models.movies.Movie
+import com.tmdb.network.services.movies.MovieDetailsService
+import com.tmdb.repository.repositories.savedrepository.source.SavedPagingSource
 import com.tmdb.repository.utils.Response
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 class SavedRepositoryImpl @Inject constructor(
     private val localDataSource: SavedMoviesDao,
+    private val remoteDataSource: MovieDetailsService,
 ) : SavedRepository {
-    override suspend fun getSavedIds(): Flow<Response<List<Int>>> {
-        return flow<Response<List<Int>>> {
-            emit(Response.Loading(null))
-
-            val flow = try {
-                val localResponse = localDataSource.getSavedMovies()
-
-                localResponse.map { flowData ->
-                    Response.Success(
-                        flowData.map { it.id }
-                    )
-                }
-
-            } catch (throwable: Throwable) {
-                flow { emit(Response.Error(throwable)) }
-            }
-
-            emitAll(flow)
-        }.flowOn(Dispatchers.IO)
-    }
-
     override suspend fun isSaved(id: Int): Flow<Response<Boolean>> {
         return flow<Response<Boolean>> {
             emit(Response.Loading(null))
@@ -50,11 +39,23 @@ class SavedRepositoryImpl @Inject constructor(
         }.flowOn(Dispatchers.IO)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun insertSaved(id: Int) {
-        localDataSource.insertSavedMovie(MovieEntity(id))
+        localDataSource.insertSavedMovie(MovieEntity(id, LocalDateTime.now()))
     }
 
     override suspend fun deleteSaved(id: Int) {
-        localDataSource.deleteSavedMovie(MovieEntity(id))
+        localDataSource.deleteSavedMovie(id)
+    }
+
+    override suspend fun fetchSavedMovies(): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false,
+                initialLoadSize = 20
+            ),
+            pagingSourceFactory = { SavedPagingSource(localDataSource, remoteDataSource) }
+        ).flow
     }
 }

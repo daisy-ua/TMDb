@@ -55,4 +55,14 @@
             app:argType="long" />
     </fragment>
 
+    <fragment
+        android:id="@+id/saved_fragment"
+        android:name="com.example.tmdb.ui.fragments.saved.SavedFragment"
+        android:label="@string/saved_name"
+        tools:layout="@layout/fragment_see_more">
+        <action
+            android:id="@+id/get_movie_details_action"
+            app:destination="@id/movie_details_fragment" />
+    </fragment>
+
 </navigation>

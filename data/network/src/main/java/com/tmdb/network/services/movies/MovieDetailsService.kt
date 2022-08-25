@@ -1,12 +1,18 @@
 package com.tmdb.network.services.movies
 
 import com.tmdb.network.models.movie.MovieDetailsDto
+import com.tmdb.network.models.movie.MovieDto
 import com.tmdb.network.models.movie.MoviePaginatedDto
 import com.tmdb.network.models.video.VideoListDto
 import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface MovieDetailsService {
+
+    @GET("movie/{movie_id}")
+    suspend fun getMoviePreview(
+        @Path("movie_id") id: Int,
+    ): MovieDto
 
     @GET("movie/{movie_id}")
     suspend fun getMovieDetails(

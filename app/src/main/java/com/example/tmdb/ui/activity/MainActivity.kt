@@ -38,6 +38,8 @@ class MainActivity : AppCompatActivity() {
 
             R.id.home_fragment -> onExitBackPressed()
 
+            R.id.saved_fragment -> onExploreFragmentBackPressed()
+
             else -> super.onBackPressed()
         }
     }

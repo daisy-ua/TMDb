@@ -29,6 +29,8 @@
         <entry key="app/src/main/res/drawable/ic_image.xml" value="0.2145" />
         <entry key="app/src/main/res/drawable/ic_image_not_supported.xml" value="0.2145" />
         <entry key="app/src/main/res/drawable/ic_rating.xml" value="0.19" />
+        <entry key="app/src/main/res/drawable/ic_ribbon_fill.xml" value="0.2145" />
+        <entry key="app/src/main/res/drawable/ic_ribbon_stroke.xml" value="0.2145" />
         <entry key="app/src/main/res/drawable/ic_save_filled.xml" value="0.19" />
         <entry key="app/src/main/res/drawable/ic_save_stroked.xml" value="0.19" />
         <entry key="app/src/main/res/drawable/ic_search.xml" value="0.2145" />
@@ -54,7 +56,7 @@
         <entry key="app/src/main/res/layout/element_network_state.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/element_year_duration_textview.xml" value="0.3269927536231884" />
         <entry key="app/src/main/res/layout/fragment_explore.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/fragment_explore_filters.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_explore_filters.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.19791666666666666" />
         <entry key="app/src/main/res/layout/fragment_movie_details.xml" value="0.2556179775280899" />
         <entry key="app/src/main/res/layout/fragment_movie_home.xml" value="0.24954710144927536" />

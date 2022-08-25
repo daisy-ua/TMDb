@@ -6,8 +6,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SavedMoviesDao {
-    @Query("SELECT * FROM saved")
-    fun getSavedMovies(): Flow<List<MovieEntity>>
+    @Query("SELECT * FROM saved ORDER BY date_added DESC LIMIT :limit OFFSET :offset")
+    suspend fun getSavedMovies(limit: Int, offset: Int): List<MovieEntity>
 
     @Query("SELECT EXISTS(SELECT * FROM saved WHERE id == :movieId)")
     fun isMovieSaved(movieId: Int): Flow<Boolean>
@@ -15,6 +15,6 @@ interface SavedMoviesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSavedMovie(movie: MovieEntity)
 
-    @Delete
-    suspend fun deleteSavedMovie(movie: MovieEntity)
+    @Query("DELETE FROM saved WHERE id = :id")
+    suspend fun deleteSavedMovie(id: Int)
 }

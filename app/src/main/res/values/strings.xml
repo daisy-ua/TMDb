@@ -26,4 +26,7 @@
     <string name="watch_more">Watch more</string>
     <string name="see_more">See more</string>
     <string name="trending">Trending</string>
+    <string name="saved_name">Saved</string>
+    <string name="watchlist_main_msg">Keep track of what you want to watch</string>
+    <string name="watchlist_sub_msg">Create your collection of worthy movies</string>
 </resources>

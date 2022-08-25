@@ -22,6 +22,8 @@ import com.example.tmdb.ui.activity.MainActivity
 import com.example.tmdb.ui.components.buildTagTextView
 import com.example.tmdb.ui.components.recyclerview.setupRecyclerView
 import com.example.tmdb.ui.utils.adapters.MovieAdapter
+import com.example.tmdb.ui.utils.eventmanager.EventManager
+import com.example.tmdb.ui.utils.eventmanager.events.BaseEvents
 import com.example.tmdb.ui.utils.interactions.Interaction
 import com.example.tmdb.ui.utils.rvdecorators.LinearItemDecoration
 import com.example.tmdb.utils.ImageManager
@@ -48,6 +50,7 @@ class MovieDetailsFragment : Fragment(), Interaction {
     private lateinit var binding: FragmentMovieDetailsBinding
 
     private val viewModel: MovieDetailsViewModel by viewModels()
+    private val eventManager: EventManager by viewModels({ requireActivity() })
 
     private var ytTracker: YouTubePlayerTracker = YouTubePlayerTracker()
 
@@ -107,6 +110,15 @@ class MovieDetailsFragment : Fragment(), Interaction {
 
         binding.saveBtn.setOnClickListener {
             viewModel.updateIsMovieSaved(args.movieId.toInt())
+            if (eventManager.shouldApplyModifications) {
+                eventManager.emitEvent(
+                    if (viewModel.isSaved.value.data == true) {
+                        BaseEvents.Remove(args.movieId.toInt())
+                    } else {
+                        BaseEvents.InsertItemHeader(getDataInstance())
+                    }
+                )
+            }
         }
 
         viewLifecycleOwner.lifecycle.addObserver(binding.scrollContent.trailerView)
@@ -163,6 +175,25 @@ class MovieDetailsFragment : Fragment(), Interaction {
                 }
             }
         }
+    }
+
+    private fun getDataInstance() = viewModel.movieDetails.value?.data!!.let {
+        Movie(
+            posterPath = it.posterPath,
+            adult = it.adult,
+            overview = it.overview,
+            releaseDate = it.releaseDate,
+            genreIds = listOf(),
+            id = it.id,
+            originalTitle = it.originalTitle,
+            originalLanguage = it.originalLanguage,
+            title = it.title,
+            backdropPath = it.backdropPath,
+            popularity = it.popularity,
+            voteAverage = it.voteAverage,
+            voteCount = it.voteCount,
+            video = it.video
+        )
     }
 
     private fun showLoading() {
