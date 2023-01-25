@@ -23,7 +23,7 @@ class MovieAdapter(
 
     override fun getItemViewType(position: Int): Int = position
 
-    override fun getItemId(position: Int): Long = differ.currentList[position].id.toLong()
+    override fun getItemId(position: Int): Long = differ.currentList[position].id!!.toLong()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)

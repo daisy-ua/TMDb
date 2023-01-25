@@ -10,43 +10,43 @@ data class MovieDetails(
 
     val backdropPath: String?,
 
-    val budget: Int,
+    val budget: Int?,
 
-    val genres: List<Genre>,
+    val genres: List<Genre>?,
 
     val homepage: String?,
 
-    val id: Int,
+    val id: Int?,
 
-    val originalLanguage: String,
+    val originalLanguage: String?,
 
-    val originalTitle: String,
+    val originalTitle: String?,
 
     val overview: String?,
 
-    val popularity: Float,
+    val popularity: Float?,
 
     val posterPath: String?,
 
-    val productionCountries: List<Country>,
+    val productionCountries: List<Country>?,
 
-    val releaseDate: String,
+    val releaseDate: String?,
 
-    val revenue: Int,
+    val revenue: Int?,
 
     val runtime: Int?,
 
-    val spokenLanguages: List<SpokenLanguage>,
+    val spokenLanguages: List<SpokenLanguage>?,
 
-    val status: ProductionStatus,
+    val status: ProductionStatus?,
 
     val tagline: String?,
 
-    val title: String,
+    val title: String?,
 
     val video: Boolean,
 
-    val voteAverage: Float,
+    val voteAverage: Float?,
 
-    val voteCount: Int,
+    val voteCount: Int?,
 )

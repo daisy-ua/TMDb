@@ -6,56 +6,56 @@ import com.tmdb.network.models.genre.GenreDto
 import com.tmdb.network.models.SpokenLanguageDto
 
 data class MovieDetailsDto(
-    val adult: Boolean,
+    val adult: Boolean?,
 
     @SerializedName("backdrop_path")
     val backdropPath: String?,
 
-    val budget: Int,
+    val budget: Int?,
 
-    val genres: List<GenreDto>,
+    val genres: List<GenreDto>?,
 
     val homepage: String?,
 
-    val id: Int,
+    val id: Int?,
 
     @SerializedName("original_language")
-    val originalLanguage: String,
+    val originalLanguage: String?,
 
     @SerializedName("original_title")
-    val originalTitle: String,
+    val originalTitle: String?,
 
     val overview: String?,
 
-    val popularity: Float,
+    val popularity: Float?,
 
     @SerializedName("poster_path")
     val posterPath: String?,
 
     @SerializedName("production_countries")
-    val productionCountries: List<CountryDto>,
+    val productionCountries: List<CountryDto>?,
 
     @SerializedName("release_date")
-    val releaseDate: String,
+    val releaseDate: String?,
 
-    val revenue: Int,
+    val revenue: Int?,
 
     val runtime: Int?,
 
     @SerializedName("spoken_languages")
-    val spokenLanguages: List<SpokenLanguageDto>,
+    val spokenLanguages: List<SpokenLanguageDto>?,
 
-    val status: String,
+    val status: String?,
 
     val tagline: String?,
 
-    val title: String,
+    val title: String?,
 
-    val video: Boolean,
+    val video: Boolean?,
 
     @SerializedName("vote_average")
-    val voteAverage: Float,
+    val voteAverage: Float?,
 
     @SerializedName("vote_count")
-    val voteCount: Int
+    val voteCount: Int?
 )

@@ -7,25 +7,25 @@ data class Movie(
 
     val overview: String?,
 
-    val releaseDate: String,
+    val releaseDate: String?,
 
-    val genreIds: List<Int>,
+    val genreIds: List<Int>?,
 
-    val id: Int,
+    val id: Int?,
 
-    val originalTitle: String,
+    val originalTitle: String?,
 
-    val originalLanguage: String,
+    val originalLanguage: String?,
 
-    val title: String,
+    val title: String?,
 
     val backdropPath: String?,
 
-    val popularity: Float,
+    val popularity: Float?,
 
-    val voteAverage: Float,
+    val voteAverage: Float?,
 
-    val voteCount: Int,
+    val voteCount: Int?,
 
     val video: Boolean,
 )

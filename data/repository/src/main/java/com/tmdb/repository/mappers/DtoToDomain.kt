@@ -17,7 +17,7 @@ import com.tmdb.network.models.video.VideoListDto
 internal fun MovieDto.toDomain(): Movie {
     return Movie(
         posterPath = posterPath,
-        adult = adult,
+        adult = adult ?: true,
         overview = overview,
         releaseDate = releaseDate ?: "",
         genreIds = genreIds ?: listOf(),
@@ -29,16 +29,16 @@ internal fun MovieDto.toDomain(): Movie {
         popularity = popularity,
         voteAverage = voteAverage,
         voteCount = voteCount,
-        video = video
+        video = video ?: false
     )
 }
 
 internal fun MovieDetailsDto.toDomain(): MovieDetails {
     return MovieDetails(
-        adult = adult,
+        adult = adult ?: true,
         backdropPath = backdropPath,
         budget = budget,
-        genres = genres.map { it.toDomain() },
+        genres = genres?.map { it.toDomain() },
         homepage = homepage,
         id = id,
         originalLanguage = originalLanguage,
@@ -46,15 +46,15 @@ internal fun MovieDetailsDto.toDomain(): MovieDetails {
         overview = overview,
         popularity = popularity,
         posterPath = posterPath,
-        productionCountries = productionCountries.map { it.toDomain() },
+        productionCountries = productionCountries?.map { it.toDomain() },
         releaseDate = releaseDate,
         revenue = revenue,
         runtime = runtime,
-        spokenLanguages = spokenLanguages.map { it.toDomain() },
-        status = ProductionStatus.getType(status),
+        spokenLanguages = spokenLanguages?.map { it.toDomain() },
+        status = status?.let { ProductionStatus.getType(it) },
         tagline = tagline,
         title = title,
-        video = video,
+        video = video ?: false,
         voteAverage = voteAverage,
         voteCount = voteCount
     )

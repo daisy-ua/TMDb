@@ -243,8 +243,8 @@ class MovieDetailsFragment : Fragment(), Interaction {
         setupBasicMovieInfo(movie)
         setupPosters(movie)
         setupTags(movie)
-        setupGenres(movie.genres)
-        setupCountries(movie.productionCountries)
+        movie.genres?.let { setupGenres(it) }
+        movie.productionCountries?.let { setupCountries(it) }
 
         binding.mainProgressBar.isVisible = false
         binding.scrollContent.root.isVisible = true
@@ -268,7 +268,7 @@ class MovieDetailsFragment : Fragment(), Interaction {
         with(binding.scrollContent) {
             mainTags.tag1.icon.setImageResource(R.drawable.ic_calendar)
             mainTags.tag1.name.setText(R.string.year)
-            mainTags.tag1.value.text = getYear(movie.releaseDate).toString()
+            movie.releaseDate?.let { mainTags.tag1.value.text = getYear(it).toString() }
 
             mainTags.tag2.icon.setImageResource(R.drawable.ic_duration)
             mainTags.tag2.name.setText(R.string.duration)

@@ -27,7 +27,7 @@ class MoviePagingAdapter @Inject constructor(
             if (holder is MovieViewHolder) {
                 holder.bind(movie)
                 holder.itemView.setOnClickListener {
-                    interaction.onItemClicked(movie.id.toLong())
+                    interaction.onItemClicked(movie.id!!.toLong())
                 }
             }
         }
