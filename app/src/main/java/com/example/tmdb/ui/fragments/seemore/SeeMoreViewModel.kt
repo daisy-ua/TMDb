@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.daisy.domain.models.movies.Movie
+import com.daisy.domain.usecases.FetchNowPlayingMovies
+import com.daisy.domain.usecases.FetchTopRatedMovies
+import com.daisy.domain.usecases.FetchTrendingMovies
 import com.example.tmdb.constants.HomeCategory
-import com.tmdb.models.movies.Movie
-import com.tmdb.repository.repositories.movie_paginated_repository.MoviePaginatedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,9 +18,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SeeMoreViewModel @Inject constructor(
-    private val moviePaginatedRepository: MoviePaginatedRepository,
+    private val fetchTopRatedMovies: FetchTopRatedMovies,
+    private val fetchNowPlayingMovies: FetchNowPlayingMovies,
+    private val fetchTrendingMovies: FetchTrendingMovies,
 ) : ViewModel() {
-    private val _movies = MutableStateFlow<PagingData<Movie>>(PagingData.empty())
+    private val _movies =
+        MutableStateFlow<PagingData<Movie>>(PagingData.empty())
     val movies: StateFlow<PagingData<Movie>> get() = _movies
 
     fun fetchMovies(category: HomeCategory) {
@@ -39,12 +44,12 @@ class SeeMoreViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchTrendingMovies() = moviePaginatedRepository.fetchTrendingMovies()
+    private suspend fun fetchTrendingMovies() = fetchTrendingMovies.invoke()
         .cachedIn(viewModelScope)
 
-    private suspend fun fetchNowPlayingMovies() = moviePaginatedRepository.fetchNowPlayingMovies()
+    private suspend fun fetchNowPlayingMovies() = fetchNowPlayingMovies.invoke()
         .cachedIn(viewModelScope)
 
-    private suspend fun fetchTopRatedMovies() = moviePaginatedRepository.fetchTopRatedMovies()
+    private suspend fun fetchTopRatedMovies() = fetchTopRatedMovies.invoke()
         .cachedIn(viewModelScope)
 }

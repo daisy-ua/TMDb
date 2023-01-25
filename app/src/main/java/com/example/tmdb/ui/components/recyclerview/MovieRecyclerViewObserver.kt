@@ -2,10 +2,10 @@ package com.example.tmdb.ui.components.recyclerview
 
 import android.util.Log
 import androidx.lifecycle.Observer
+import com.daisy.constants.Response
+import com.daisy.domain.models.movies.MoviePaginated
 import com.example.tmdb.databinding.ContainerRecyclerViewBinding
 import com.example.tmdb.ui.utils.adapters.MovieAdapter
-import com.tmdb.models.movies.MoviePaginated
-import com.tmdb.repository.utils.Response
 
 fun getRecyclerViewDataSetupObserver(contentList: ContainerRecyclerViewBinding) =
     Observer<Response<MoviePaginated>?> { response ->

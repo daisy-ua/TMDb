@@ -19,6 +19,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.daisy.domain.models.movies.Movie
 import com.example.tmdb.R
 import com.example.tmdb.databinding.FragmentExploreBinding
 import com.example.tmdb.ui.components.recyclerview.setupRecyclerView
@@ -29,7 +30,6 @@ import com.example.tmdb.ui.utils.loadstate.PagingLoadStateAdapter
 import com.example.tmdb.ui.utils.rvdecorators.GridItemDecorator
 import com.example.tmdb.ui.utils.uistate.UiAction
 import com.example.tmdb.ui.utils.uistate.UiState
-import com.tmdb.models.movies.Movie
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

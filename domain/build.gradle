@@ -1,9 +1,10 @@
-plugins {
-    id 'java-library'
-    id 'org.jetbrains.kotlin.jvm'
-}
+apply from: "$rootDir/common-android-library-build.gradle"
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_7
-    targetCompatibility = JavaVersion.VERSION_1_7
+dependencies {
+    implementation project(":constants")
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2"
+
+    implementation "androidx.paging:paging-runtime:3.1.1"
 }

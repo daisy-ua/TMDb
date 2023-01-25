@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.daisy.domain.models.movies.Movie
 import com.example.tmdb.databinding.ContainerShowImplicitBinding
 import com.example.tmdb.ui.utils.MovieComparator
-import com.example.tmdb.ui.utils.viewholders.MovieViewHolder
 import com.example.tmdb.ui.utils.interactions.Interaction
-import com.tmdb.models.movies.Movie
+import com.example.tmdb.ui.utils.viewholders.MovieViewHolder
 import javax.inject.Inject
 
 class MoviePagingAdapter @Inject constructor(

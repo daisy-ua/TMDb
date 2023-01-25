@@ -6,6 +6,7 @@
       <module name="TMDb.data.cache" target="11" />
       <module name="TMDb.data.network" target="11" />
       <module name="TMDb.data.repository" target="11" />
+      <module name="TMDb.domain" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

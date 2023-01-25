@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import com.daisy.constants.Response
+import com.daisy.domain.models.Genre
 import com.example.tmdb.constants.AppConstants.DEFAULT_QUERY
 import com.example.tmdb.constants.FilterKeys
 import com.example.tmdb.constants.SortOption
@@ -16,8 +18,6 @@ import com.example.tmdb.ui.fragments.explore.ExploreViewModel
 import com.example.tmdb.ui.utils.uistate.UiAction
 import com.example.tmdb.utils.getFilterMap
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.tmdb.models.Genre
-import com.tmdb.repository.utils.Response
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

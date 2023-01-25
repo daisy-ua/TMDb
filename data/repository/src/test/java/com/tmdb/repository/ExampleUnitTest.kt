@@ -1,7 +1,7 @@
 package com.tmdb.repository
 
 import android.util.Log
-import com.tmdb.models.ProductionStatus
+import com.daisy.domain.models.ProductionStatus
 import org.junit.Test
 
 import org.junit.Assert.*

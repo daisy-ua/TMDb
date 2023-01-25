@@ -2,9 +2,11 @@ package com.example.tmdb.ui.fragments.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tmdb.models.movies.MoviePaginated
-import com.tmdb.repository.repositories.moviepaginatedpreview.MoviePaginatedPreviewRepository
-import com.tmdb.repository.utils.Response
+import com.daisy.constants.Response
+import com.daisy.domain.models.movies.MoviePaginated
+import com.daisy.domain.usecases.FetchNowPlayingMoviesPreview
+import com.daisy.domain.usecases.FetchTopRatedMoviesPreview
+import com.daisy.domain.usecases.FetchTrendingMoviesPreview
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +16,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val moviePaginatedPreviewRepository: MoviePaginatedPreviewRepository,
+    private val fetchTopRatedMoviesPreview: FetchTopRatedMoviesPreview,
+    private val fetchNowPlayingMoviesPreview: FetchNowPlayingMoviesPreview,
+    private val fetchTrendingMoviesPreview: FetchTrendingMoviesPreview,
 ) : ViewModel() {
 
     private val _nowPlayingMovies = MutableStateFlow<Response<MoviePaginated>>(Response.Loading())
@@ -36,19 +40,19 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun fetchTrendingMovies() = viewModelScope.launch {
-        moviePaginatedPreviewRepository.fetchTrendingMoviesPreview().collect {
+        fetchTrendingMoviesPreview.invoke().collect {
             _trendingMovies.value = it
         }
     }
 
     private fun fetchNowPlayingMovies() = viewModelScope.launch {
-        moviePaginatedPreviewRepository.fetchNowPlayingMoviesPreview().collect {
+        fetchNowPlayingMoviesPreview.invoke().collect {
             _nowPlayingMovies.value = it
         }
     }
 
     private fun fetchTopRatedMovies() = viewModelScope.launch {
-        moviePaginatedPreviewRepository.fetchTopRatedMoviesPreview().collect {
+        fetchTopRatedMoviesPreview.invoke().collect {
             _topRatedMovies.value = it
         }
     }

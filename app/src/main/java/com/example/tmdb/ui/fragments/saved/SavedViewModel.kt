@@ -6,9 +6,9 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.filter
 import androidx.paging.insertHeaderItem
+import com.daisy.domain.models.movies.Movie
+import com.daisy.domain.usecases.FetchSavedMovies
 import com.example.tmdb.ui.utils.eventmanager.events.BaseEvents
-import com.tmdb.models.movies.Movie
-import com.tmdb.repository.repositories.savedrepository.SavedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SavedViewModel @Inject constructor(
-    private val savedRepository: SavedRepository,
+    private val fetchSavedMovies: FetchSavedMovies,
 ) : ViewModel() {
     private val _movies = MutableStateFlow<PagingData<Movie>>(PagingData.empty())
     val movies: StateFlow<PagingData<Movie>> get() = _movies
@@ -31,7 +31,7 @@ class SavedViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchSavedMovies() = savedRepository.fetchSavedMovies()
+    private suspend fun fetchSavedMovies() = fetchSavedMovies.invoke()
         .cachedIn(viewModelScope)
 
     fun applyEvents(

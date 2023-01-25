@@ -1,14 +1,10 @@
 package com.tmdb.repository.di
 
-import com.tmdb.repository.repositories.discover_repository.DiscoverRepository
-import com.tmdb.repository.repositories.discover_repository.DiscoverRepositoryImpl
-import com.tmdb.repository.repositories.movie_details_repository.MovieDetailsRepository
-import com.tmdb.repository.repositories.movie_details_repository.MovieDetailsRepositoryImpl
-import com.tmdb.repository.repositories.movie_paginated_repository.MoviePaginatedRepository
-import com.tmdb.repository.repositories.movie_paginated_repository.MoviePaginatedRepositoryImpl
-import com.tmdb.repository.repositories.moviepaginatedpreview.MoviePaginatedPreviewRepository
-import com.tmdb.repository.repositories.moviepaginatedpreview.MoviePaginatedPreviewRepositoryImpl
-import com.tmdb.repository.repositories.savedrepository.SavedRepository
+import com.daisy.domain.repository.*
+import com.tmdb.repository.repositories.DiscoverRepositoryImpl
+import com.tmdb.repository.repositories.MovieDetailsRepositoryImpl
+import com.tmdb.repository.repositories.MoviePaginatedPreviewRepositoryImpl
+import com.tmdb.repository.repositories.moviepaginatedrepository.MoviePaginatedRepositoryImpl
 import com.tmdb.repository.repositories.savedrepository.SavedRepositoryImpl
 import dagger.Binds
 import dagger.Module

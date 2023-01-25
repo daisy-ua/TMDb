@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.daisy.constants.Response
 import com.example.tmdb.R
 import com.example.tmdb.constants.HomeCategory
 import com.example.tmdb.databinding.FragmentHomeBinding
@@ -19,7 +20,6 @@ import com.example.tmdb.ui.components.recyclerview.setupRecyclerView
 import com.example.tmdb.ui.utils.adapters.MovieAdapter
 import com.example.tmdb.ui.utils.interactions.Interaction
 import com.example.tmdb.ui.utils.rvdecorators.LinearItemDecoration
-import com.tmdb.repository.utils.Response
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine

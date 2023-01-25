@@ -1,7 +1,7 @@
 package com.example.tmdb.ui.utils
 
 import androidx.recyclerview.widget.DiffUtil
-import com.tmdb.models.movies.Movie
+import com.daisy.domain.models.movies.Movie
 
 object MovieComparator : DiffUtil.ItemCallback<Movie>() {
     override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean =

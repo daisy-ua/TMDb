@@ -1,9 +1,9 @@
 package com.tmdb.repository.mappers
 
-import com.tmdb.models.*
-import com.tmdb.models.movies.Movie
-import com.tmdb.models.movies.MovieDetails
-import com.tmdb.models.movies.MoviePaginated
+import com.daisy.domain.models.*
+import com.daisy.domain.models.movies.Movie
+import com.daisy.domain.models.movies.MovieDetails
+import com.daisy.domain.models.movies.MoviePaginated
 import com.tmdb.network.models.CountryDto
 import com.tmdb.network.models.SpokenLanguageDto
 import com.tmdb.network.models.genre.GenreDto

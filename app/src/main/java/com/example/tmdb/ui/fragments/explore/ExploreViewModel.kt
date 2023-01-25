@@ -6,15 +6,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.daisy.constants.Response
+import com.daisy.domain.models.Genre
+import com.daisy.domain.models.movies.Movie
+import com.daisy.domain.usecases.FetchMovieDiscoverResult
+import com.daisy.domain.usecases.FetchMovieGenres
+import com.daisy.domain.usecases.FetchMovieSearchResult
 import com.example.tmdb.constants.AppConstants.DEFAULT_QUERY
 import com.example.tmdb.ui.utils.uistate.UiAction
 import com.example.tmdb.ui.utils.uistate.UiState
 import com.example.tmdb.utils.getFiltersFormatted
-import com.tmdb.models.Genre
-import com.tmdb.models.movies.Movie
-import com.tmdb.repository.repositories.discover_repository.DiscoverRepository
-import com.tmdb.repository.repositories.movie_paginated_repository.MoviePaginatedRepository
-import com.tmdb.repository.utils.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -22,8 +23,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ExploreViewModel @Inject constructor(
-    private val movieRepository: MoviePaginatedRepository,
-    private val discoverRepository: DiscoverRepository,
+    private val fetchMovieDiscoverResult: FetchMovieDiscoverResult,
+    private val fetchMovieSearchResult: FetchMovieSearchResult,
+    private val fetchMovieGenres: FetchMovieGenres,
 ) : ViewModel() {
     private val _genres = MutableLiveData<Response<List<Genre>>?>()
     val genres: LiveData<Response<List<Genre>>?> get() = _genres
@@ -97,15 +99,13 @@ class ExploreViewModel @Inject constructor(
     }
 
     private suspend fun fetchMovieDiscoverResult(): Flow<PagingData<Movie>> =
-        movieRepository
-            .fetchMovieDiscoverResult(discoverOptions)
+        fetchMovieDiscoverResult.invoke(discoverOptions)
 
     private suspend fun fetchMovieSearchResult(query: String) =
-        movieRepository
-            .fetchMovieSearchResult(query)
+        fetchMovieSearchResult.invoke(query)
 
     private fun fetchGenres() = viewModelScope.launch {
-        discoverRepository.fetchMovieGenres().collect { response ->
+        fetchMovieGenres.invoke().collect { response ->
             _genres.postValue(response)
         }
     }

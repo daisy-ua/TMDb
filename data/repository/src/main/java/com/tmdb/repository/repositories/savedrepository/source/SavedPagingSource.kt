@@ -1,10 +1,10 @@
 package com.tmdb.repository.repositories.savedrepository.source
 
+import com.daisy.domain.models.movies.Movie
 import com.tmdb.cache.dao.SavedMoviesDao
-import com.tmdb.models.movies.Movie
 import com.tmdb.network.services.movies.MovieDetailsService
 import com.tmdb.repository.mappers.toDomain
-import com.tmdb.repository.repositories.movie_paginated_repository.source.BasePagingSource
+import com.tmdb.repository.repositories.moviepaginatedrepository.source.BasePagingSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
